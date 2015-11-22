@@ -15,6 +15,8 @@ public:
     explicit guiShelter(QWidget *parent = 0);
     ~guiShelter();
 
+private slots:
+
 private:
     Ui::guiShelter *ui;
 };
