@@ -1,5 +1,5 @@
 #include "ConfigManager.h"
-#include <string.h>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
