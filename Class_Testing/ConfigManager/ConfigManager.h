@@ -3,7 +3,10 @@
 
 class ConfigManager
 {
-private:
+public:
+	ConfigManager();
+	~ConfigManager();
+
 	int ping_ground, ping_power, ping_control;
 	double ping_distance_tolerance;
 	int relay_ground, relay_control;
@@ -12,8 +15,5 @@ private:
 	Shelter::Bus bus[DEFAULT_NUM_BUS]; //borrowed a structure from Shelter class
 	//More configuration files later
 	void ReadConfigFile();
-public:
-	ConfigManager();
-	~ConfigManager();
 };
 
