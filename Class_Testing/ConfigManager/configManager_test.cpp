@@ -6,10 +6,10 @@ using namespace std;
 
 int main()
 {
-	ConfigManager config();
+	ConfigManager c();
 
-	cout << "Ping ground:" << config->ping_ground << "\n";
-	cout << "Bus Nmber: " << config->bus[1].number << "\n";
+	cout << "Ping ground:" << c->ping_ground << "\n";
+	cout << "Bus Nmber: " << c->bus[1].number << "\n";
 
 	return 0;
 }

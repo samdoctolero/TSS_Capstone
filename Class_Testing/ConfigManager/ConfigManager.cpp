@@ -82,7 +82,7 @@ void ConfigManager::ReadConfigFile()
 		//bus id section
 		else if (configline.type.find("bus_id_")!= string::npos)
 		{
-			for (int i = 0; i < DEFAULT_NUM_BUS; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				string id_num_str = to_string(i);
 				if (configline.type.find(id_num_str) != string::npos)
@@ -94,7 +94,7 @@ void ConfigManager::ReadConfigFile()
 		//bus number in each bus 
 		else if (configline.type.find("bus_number_") != string::npos)
 		{
-			for (int i = 0; i < DEFAULT_NUM_BUS; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				string id_num_str = to_string(i);
 				if (configline.type.find(id_num_str) != string::npos)
@@ -107,5 +107,6 @@ void ConfigManager::ReadConfigFile()
 			ADD MORE OF THE CONFIGURATIONS HERE
 		*/
 		else {//nothing, just the header}
+		}
 	}
 }
