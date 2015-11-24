@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#inculde "ConfigManager.h"
+#include "ConfigManager.h"
 
 using namespace std;
 
