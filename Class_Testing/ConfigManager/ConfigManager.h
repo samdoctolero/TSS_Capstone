@@ -1,9 +1,16 @@
 #pragma once
-#include "Shelter.h"
 
 class ConfigManager
 {
 public:
+	struct Bus
+	{
+		int number,			//bus number
+		num_stop_away,		//number of stops away from this stop/shelter
+		id;				//bus id
+		double initial_time;//time since last update for a certain bus
+	};
+
 	ConfigManager();
 	~ConfigManager();
 
@@ -12,7 +19,7 @@ public:
 	int relay_ground, relay_control;
 	double relay_idle_temperature, relay_env_min_temperature;
 
-	Shelter::Bus bus[DEFAULT_NUM_BUS]; //borrowed a structure from Shelter class
+	Bus bus[DEFAULT_NUM_BUS]; //borrowed a structure from Shelter class
 	//More configuration files later
 	void ReadConfigFile();
 };
