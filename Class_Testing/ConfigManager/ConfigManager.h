@@ -19,7 +19,7 @@ public:
 	int relay_ground, relay_control;
 	double relay_idle_temperature, relay_env_min_temperature;
 
-	Bus bus[DEFAULT_NUM_BUS]; //borrowed a structure from Shelter class
+	Bus bus[10]; //borrowed a structure from Shelter class
 	//More configuration files later
 	void ReadConfigFile();
 };
