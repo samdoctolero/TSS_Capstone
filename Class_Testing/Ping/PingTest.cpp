@@ -17,5 +17,7 @@ int main()
 	cout << "Power: " << pwr << endl;
 	cout << "Control: " << cntl << endl;
 	cout << "Tolerance: " << tol << endl;
+
+
 	return 0;
 }
