@@ -3,7 +3,7 @@
 
 
 RelayBoard::RelayBoard(int control, int ground, double idleT, double minT)
-:controlPin(control), groundPin(ground), idleTemp(idleT), bulbState(0), minTemp(minT)
+:controlPin(control), groundPin(ground), bulbState(0), idleTemp(idleT), minTemp(minT)
 {
 	pinMode(controlPin, OUTPUT);
 }
