@@ -3,8 +3,9 @@
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
-#include <stdio.h>
 #include <iostream>
+#include <cstring>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -29,13 +30,14 @@ void ConfigManager::ReadConfigFile()
 	char currentPath[FILENAME_MAX];
 	getcwd(currentPath,FILENAME_MAX);
 	string path(currentPath); //modified char to string
-	path.append("\configuration.txt");
+	path.append("/configuration.txt");
 
 	//Open the configuration file
 	ifstream configFile(path);
 	string line;
-	while (getline(configFile, line))
+	while (configFile.good())
 	{
+		getline(configFile, line);
 		string token;
 		config configline;
 		stringstream ss(line);
@@ -45,39 +47,38 @@ void ConfigManager::ReadConfigFile()
 		configline.value = token;
 		getline(ss, token, ','); //get the description
 		configline.description = token;
-
 		//A bunch of if statements for each configuration item
 		if (configline.type.compare("ping_ground") == 0)// 0 means it is equal
 		{
-			ping_ground = stoi(configline.value);
+			ping_ground = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("ping_pwr") == 0)
 		{
-			ping_power = stoi(configline.value);
+			ping_power = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("ping_control") == 0)
 		{
-			ping_control = stoi(configline.value);
+			ping_control = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("ping_distance_tolerance") == 0)
 		{
-			ping_distance_tolerance = stod(configline.value);
+			ping_distance_tolerance = atol(configline.value.c_str());
 		}
 		else if (configline.type.compare("relay_ground") == 0)
 		{
-			relay_ground = stoi(configline.value);
+			relay_ground = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("relay_control")==0)
 		{
-			relay_control = stoi(configline.value);
+			relay_control = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("relay_idle_temperature") == 0)
 		{
-			relay_idle_temperature = stod(configline.value);
+			relay_idle_temperature = atol(configline.value.c_str());
 		}
 		else if (configline.type.compare("relay_env_min_temperature") == 0)
 		{
-			relay_env_min_temperature = stod(configline.value);
+			relay_env_min_temperature = atol(configline.value.c_str());
 		}
 		//bus id section
 		else if (configline.type.find("bus_id_")!= string::npos)
@@ -87,7 +88,7 @@ void ConfigManager::ReadConfigFile()
 				string id_num_str = to_string(i);
 				if (configline.type.find(id_num_str) != string::npos)
 				{
-					bus[i].id = stoi(configline.value);
+					bus[i].id = atoi(configline.value.c_str());
 				}
 			}
 		}
@@ -99,14 +100,18 @@ void ConfigManager::ReadConfigFile()
 				string id_num_str = to_string(i);
 				if (configline.type.find(id_num_str) != string::npos)
 				{
-					bus[i].number = stoi(configline.value);
+					bus[i].number = atoi(configline.value.c_str());
 				}
 			}
 		}
 		/*
 			ADD MORE OF THE CONFIGURATIONS HERE
 		*/
-		else {//nothing, just the header}
+		else 
+		{//nothing, just the header}
+			//cout << "WTF!!!!!" << endl;
 		}
+
 	}
+	configFile.close();
 }

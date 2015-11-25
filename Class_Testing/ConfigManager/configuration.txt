@@ -1,30 +1,30 @@
 ﻿ITEM,VALUE,DESCRIPTION
-ping_ground, 0, Ground Pin for PING Sensor
-ping_pwr, 1, Power Pin for PING Sensor
-ping_control, 2, Control Pin for PING Sensor
-ping_distance_tolerance, 3, Distance Tolerance which indicates if a person is present or not
-relay_ground, 4, Ground or Common Pin for Relay Board
-relay_control, 5, Control Pin for Relay Board
-relay_idle_temperature, 6, Idle temperature at which the bulb should be in
-relay_env_min_temperature, 100, Minimum outside temperature that cues the bulb to turn on
-shelter_id, 100, ID of the shelter in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_1, 200, ID of the first bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_2, 300, ID of the second bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_3, 400, ID of the third bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_4, 500, ID of the fourth bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_5, 600, ID of the fifth bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_6, 700, ID of the sixth bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_7, 800, ID of the seventh bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_8, 900, ID of the eight bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_9, 100, ID of the ninth bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_id_10, 111, ID of the tenth bus in decimal <This will be unique per shelter and converted to hex in the code>
-bus_number_1, 12, Number/route of the first bus <This will be unique per shelter and converted to hex in the code>
-bus_number_2, 11, Number/route of the second bus <This will be unique per shelter and converted to hex in the code>
-bus_number_3, 3, Number/route of the third bus <This will be unique per shelter and converted to hex in the code>
-bus_number_4, 5, Number/route of the fourth bus <This will be unique per shelter and converted to hex in the code>
-bus_number_5, 99, Number/route of the fifth bus <This will be unique per shelter and converted to hex in the code>
-bus_number_6, 303, Number/route of the sixth bus <This will be unique per shelter and converted to hex in the code>
-bus_number_7, 667, Number/route of the seventh bus <This will be unique per shelter and converted to hex in the code>
-bus_number_8, 987, Number/route of the eigth bus <This will be unique per shelter and converted to hex in the code>
-bus_number_9, 55, Number/route of the ninth bus <This will be unique per shelter and converted to hex in the code>
-bus_number_10, 443, Number/route of the tenth bus <This will be unique per shelter and converted to hex in the code>
+ping_ground,0,Ground Pin for PING Sensor
+ping_pwr,1,Power Pin for PING Sensor
+ping_control,2,Control Pin for PING Sensor
+ping_distance_tolerance,3,Distance Tolerance which indicates if a person is present or not
+relay_ground,4,Ground or Common Pin for Relay Board
+relay_control,5, Control Pin for Relay Board
+relay_idle_temperature,6, Idle temperature at which the bulb should be in
+relay_env_min_temperature,100, Minimum outside temperature that cues the bulb to turn on
+shelter_id,100,ID of the shelter in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_1,200, ID of the first bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_2,300, ID of the second bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_3,400, ID of the third bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_4,500, ID of the fourth bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_5,600, ID of the fifth bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_6,700, ID of the sixth bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_7,800, ID of the seventh bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_8,900, ID of the eight bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_9,100, ID of the ninth bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_id_10,111, ID of the tenth bus in decimal <This will be unique per shelter and converted to hex in the code>
+bus_number_1,12, Number/route of the first bus <This will be unique per shelter and converted to hex in the code>
+bus_number_2,11, Number/route of the second bus <This will be unique per shelter and converted to hex in the code>
+bus_number_3,3, Number/route of the third bus <This will be unique per shelter and converted to hex in the code>
+bus_number_4,5, Number/route of the fourth bus <This will be unique per shelter and converted to hex in the code>
+bus_number_5,99, Number/route of the fifth bus <This will be unique per shelter and converted to hex in the code>
+bus_number_6,303, Number/route of the sixth bus <This will be unique per shelter and converted to hex in the code>
+bus_number_7,667, Number/route of the seventh bus <This will be unique per shelter and converted to hex in the code>
+bus_number_8,987, Number/route of the eigth bus <This will be unique per shelter and converted to hex in the code>
+bus_number_9,55, Number/route of the ninth bus <This will be unique per shelter and converted to hex in the code>
+bus_number_10,443, Number/route of the tenth bus <This will be unique per shelter and converted to hex in the code>

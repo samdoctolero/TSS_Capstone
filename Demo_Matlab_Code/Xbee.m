@@ -14,7 +14,7 @@ classdef Xbee < handle
         end
         
         function complete = initialize(this)
-            this.Object = serial(['COM' this.port]);
+            this.Object = serial(strcat('COM',num2str(this.port)));
             set(this.Object,'BaudRate',9600);
             set(this.Object,'DataBits',8);
             set(this.Object,'Parity','None');
@@ -25,6 +25,11 @@ classdef Xbee < handle
             catch ex
                 complete = false;
             end
+        end
+        
+        function [str] = getEcho(this)
+            str = fscanf(this.Object,'%s');
+            %fprintf('echo: %s\n',echo);
         end
     end
     
