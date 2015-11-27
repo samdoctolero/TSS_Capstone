@@ -6,6 +6,7 @@ private:
 	double dist_tolerance, distance; //in cm
 
 public:
+	int accumTime;
 	Ping(int gnd, int pwr, int control, double tol);
 	~Ping();
 

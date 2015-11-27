@@ -6,7 +6,7 @@
 #define SOUND_SPEED 344 //speed of sound in meters per second
 
 Ping::Ping(int gnd, int pwr, int control, double tol)
-:GND_pin(gnd), PWR_pin(pwr), CONTROL_pin(control), dist_tolerance(tol), distance(0)
+:GND_pin(gnd), PWR_pin(pwr), CONTROL_pin(control), dist_tolerance(tol), distance(0), accumTime(0);
 {}
 
 Ping::~Ping()
@@ -57,6 +57,7 @@ void Ping::updateDistance()
 	}
 	//double dist = (utime / 2000) * SOUND_SPEED; // (t/2)*(344m/s)*(100cm/1m)*(1s/1000us)
 	this->distance = utime*SOUND_SPEED / 2000; //cm
+	this->accumTime = utime;
 	delay(1000);
 }
 
