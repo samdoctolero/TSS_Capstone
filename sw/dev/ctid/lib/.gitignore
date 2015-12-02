@@ -1,0 +1,15 @@
+/config.mk
+/tags
+*~
+
+lib
+.build
+.*.dir
+
+*.d
+*.o
+*.so
+main
+
+*.obj
+*.exe
