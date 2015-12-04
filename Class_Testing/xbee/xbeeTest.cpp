@@ -39,14 +39,11 @@ int main(void) {
 	xbee_conCallbackSet(con, myCB, NULL);
 
 	ret = xbee_conTx(con, &txRet, "NI");
+
 	printf("tx: %d\n", ret);
-	if (ret) 
-	{
-		printf("txRet: %d\n", txRet);
-	}
-	else {
-		usleep(1000000);
-	}
+	printf("txRet: %d\n", txRet);
+
+	usleep(1000000);
 	xbee_conEnd(con);
 
 	/* shutdown libxbee */
