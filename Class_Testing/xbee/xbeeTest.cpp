@@ -34,16 +34,19 @@ int main(void) {
 	address.addr64[6] = 0x18;
 	address.addr64[7] = 0x26;
 
-	/* create a 64-bit data connection with the address */
 	xbee_conNew(xbee, &con, "64-bit Data", &address);
 
-	/* setup a callback to keep both the system load and response time low */
 	xbee_conCallbackSet(con, myCB, NULL);
 
-	/* sleep for a minute! */
-	sleep(10);
-
-	/* close the connection */
+	ret = xbee_conTx(con, &txRet, "NI");
+	printf("tx: %d\n", ret);
+	if (ret) 
+	{
+		printf("txRet: %d\n", txRet);
+	}
+	else {
+		usleep(1000000);
+	}
 	xbee_conEnd(con);
 
 	/* shutdown libxbee */
