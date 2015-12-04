@@ -41,7 +41,7 @@ int main(void) {
 	xbee_conCallbackSet(con, myCB, NULL);
 
 	/* sleep for a minute! */
-	sleep(60);
+	sleep(10);
 
 	/* close the connection */
 	xbee_conEnd(con);
