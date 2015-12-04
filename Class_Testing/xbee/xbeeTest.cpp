@@ -18,6 +18,8 @@ int main(void) {
 	struct xbee *xbee;
 	struct xbee_con *con;
 	struct xbee_conAddress address;
+	unsigned char txRet;
+	xbee_err ret;
 
 	/* setup libxbee, using a Series 1 XBee, on /dev/ttyUSB0, at 57600 baud */
 	xbee_setup(&xbee, "xbee1", "/dev/ttyUSB0", 57600);
