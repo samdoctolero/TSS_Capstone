@@ -27,7 +27,7 @@ XBee module, and then request its Node Identifier before shutting down.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <unistd.h>
 #include <xbee.h>
 
 /* this is the callback function...
@@ -53,8 +53,17 @@ int main(void) {
 		return ret;
 	}
 
-	/* create a new AT connection to the local XBee */
-	if ((ret = xbee_conNew(xbee, &con, "Local AT", NULL)) != XBEE_ENONE) {
+	memset(&address, 0, sizeof(address));
+	address.addr64_enabled = 1;
+	address.addr64[0] = 0x00;
+	address.addr64[1] = 0x13;
+	address.addr64[2] = 0xA2;
+	address.addr64[3] = 0x00;
+	address.addr64[4] = 0x40;
+	address.addr64[5] = 0x2D;
+	address.addr64[6] = 0x60;
+	address.addr64[7] = 0x7B;
+	if ((ret = xbee_conNew(xbee, &con, "Remote AT", &address)) != XBEE_ENONE) {
 		xbee_log(xbee, -1, "xbee_conNew() returned: %d (%s)", ret, xbee_errorToStr(ret));
 		return ret;
 	}
