@@ -44,6 +44,7 @@ int main(void) {
 	void *d;
 	struct xbee *xbee;
 	struct xbee_con *con;
+	struct xbee_conAddress address;
 	unsigned char txRet;
 	xbee_err ret;
 
