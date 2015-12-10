@@ -6,8 +6,8 @@
 #include <iomanip>
 
 #include <xbeep.h>
-#include <remotenode.h>
-#include <atcon.h>
+#include "remotenode.h"
+#include "atcon.h"
 
 void atcon::xbee_conCallback(libxbee::Pkt **pkt) {
 	if (!this->node_detect_complete) {

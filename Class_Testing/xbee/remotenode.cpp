@@ -6,7 +6,7 @@
 #include <iomanip>
 
 #include <xbeep.h>
-#include <remotenode.h>
+#include "remotenode.h"
 
 remotenode::remotenode(std::vector<unsigned char> nd_payload) {
 	int i = 0;

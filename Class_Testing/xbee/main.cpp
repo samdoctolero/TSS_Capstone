@@ -5,9 +5,9 @@
 #include <list>
 #include <iomanip>
 
-#include <xbeep.h>
-#include <remotenode.h>
-#include <atcon.h>
+#include <xbee.h>
+#include "remotenode.h"
+#include "atcon.h"
 
 int main(int argc, char *argv[]) {
 	int i;
