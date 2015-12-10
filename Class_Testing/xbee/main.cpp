@@ -122,6 +122,7 @@ void atcon::start_node_detect(void) {
 class discovernode {
 public:
 	explicit discovernode() {};
+
 	void discover();
 };
 
@@ -130,7 +131,7 @@ void discovernode::discover() {
 
 	try {
 		/* setup libxbee */
-		libxbee::XBee xbee("xbee1", "/dev/ttyUSB0", 57600);
+		libxbee::XBee xbee("xbee1", "/dev/ttyUSB1", 57600);
 
 		/* make a connection */
 		atcon con(xbee, "Local AT"); /* AT connection with a callback handler */
@@ -158,7 +159,7 @@ void discovernode::discover() {
 
 int main(int argc, char *argv[]) {
 	discovernode node();
-	node.discover();
+	node.discover;
 
 	return 0;
 }
