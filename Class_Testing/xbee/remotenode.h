@@ -1,4 +1,13 @@
 #pragma once
+#include <stdint.h>
+#include <iostream>
+#include <string.h>
+#include <unistd.h>
+#include <list>
+#include <iomanip>
+
+#include <xbeep.h>
+
 class remotenode {
 public:
 	explicit remotenode(std::string name, uint16_t addr16, uint64_t addr64) :
