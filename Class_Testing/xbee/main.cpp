@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include <xbeep.h>
+#include "remotenode.h"
 
 class remotenode {
 public:
@@ -119,14 +120,8 @@ void atcon::start_node_detect(void) {
 
 /* ========================================================================== */
 
-class discovernode {
-public:
-	explicit discovernode() {};
 
-	void discover();
-};
-
-void discovernode::discover() {
+int main(int argc, char *argv[]) {
 	int i;
 
 	try {
@@ -155,11 +150,4 @@ void discovernode::discover() {
 	catch (xbee_err err) {
 		std::cout << "Error " << err << "\n";
 	}
-}
-
-int main(int argc, char *argv[]) {
-	discovernode node;
-	node.discover();
-
-	return 0;
 }
