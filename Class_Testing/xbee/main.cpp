@@ -158,8 +158,8 @@ void discovernode::discover() {
 }
 
 int main(int argc, char *argv[]) {
-	discovernode node();
-	node.discover;
+	discovernode node;
+	node.discover();
 
 	return 0;
 }
