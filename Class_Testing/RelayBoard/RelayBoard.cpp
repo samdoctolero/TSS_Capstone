@@ -2,8 +2,8 @@
 #include <wiringPi.h>
 
 
-RelayBoard::RelayBoard(int control, int ground, double idleT, double minT)
-:controlPin(control), groundPin(ground), bulbState(0), idleTemp(idleT), minTemp(minT)
+RelayBoard::RelayBoard(int control, double idleT, double minT)
+:controlPin(control), bulbState(0), idleTemp(idleT), minEnvTemp(minT)
 {
 	pinMode(controlPin, OUTPUT);
 }
@@ -13,34 +13,34 @@ RelayBoard::~RelayBoard()
 {
 }
 
-void RelayBoard::setPins(int control, int ground)
+void RelayBoard::setControlPin(int control)
 {
-	this->controlPin = control; this->groundPin = ground;
+	this->controlPin = control;;
 }
 
-void RelayBoard::getPins(int &control, int &ground)
+unsigned int RelayBoard::getControlPin()
 {
-	control = this->controlPin; ground = this->groundPin;
+	return this->controlPin;
 }
 
-void RelayBoard::getTemps(double &idleT, double &minT)
+void RelayBoard::getTempSettings(double &idleT, double &minT)
 {
 	idleT = this->idleTemp;
-	minT = this->minTemp;
+	minT = this->minEnvTemp;
 }
 
 void RelayBoard::heatControl(double bulbTemp, double envTemp, bool objectPresent)
 {
 	//control the board and set the board's state
 	int signal = 0;
-	if (envTemp < this->minTemp)
+	if (envTemp < this->minEnvTemp) //If the read enviro. temp. is lower than the min Temp of the bulb
 	{
-		if (objectPresent)
+		if (objectPresent)//If someone is present in the shelter then turn on the bulb to the max
 		{
 			signal = 1;
 			this->bulbState = MAX;
 		}
-		else
+		else // If no one is present then set the bulb to an idle state
 		{
 			this->bulbState = IDLE;
 			if (bulbTemp > this->idleTemp)
@@ -53,12 +53,12 @@ void RelayBoard::heatControl(double bulbTemp, double envTemp, bool objectPresent
 			}
 		}
 	}
-	else
+	else // If the env. temp is greater than or equal to the min temp then keep it off
 	{
 		signal = 0;
 		this->bulbState = OFF;
 	}
-	this->sendToRelay(signal);
+	this->sendToRelay(signal); // send the signal to the relay
 }
 
 void RelayBoard::sendToRelay(int state)
