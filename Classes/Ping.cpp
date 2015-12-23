@@ -1,22 +1,26 @@
 #include <wiringPi.h> //Need to be installed on the Pi to be used
 #include <ctime>
 #include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include "Ping.h"
 
 #define SOUND_SPEED 344 //speed of sound in meters per second
 
-Ping::Ping(int gnd, int pwr, int control, double tol)
-:GND_pin(gnd), PWR_pin(pwr), CONTROL_pin(control), dist_tolerance(tol), distance(0)
-{}
+Ping::Ping(int control, double tol, double runT)
+:controlPin(control), dist_tolerance(tol), distance(0), runTime(runT), startTime(0), pausedState(false)
+{
+}
 
 Ping::~Ping()
 {
 }
 
 //Getters and Setters
-void Ping::setPins(int gnd, int pwr, int control)
+void Ping::setControlPin(int control)
 {
-	this->GND_pin = gnd; this->PWR_pin = pwr; this->CONTROL_pin = control;
+	this->controlPin = control;
 }
 
 void Ping::setTolerance(double dist)
@@ -24,9 +28,9 @@ void Ping::setTolerance(double dist)
 	this->dist_tolerance = dist;
 }
 
-void Ping::getPins(int &gnd, int &pwr, int &control)
+unsigned int Ping::getControlPin()
 {
-	gnd = this->GND_pin; pwr = this->PWR_pin; control = this->CONTROL_pin;
+	return controlPin;
 }
 
 double Ping::getTolerance()
@@ -34,34 +38,56 @@ double Ping::getTolerance()
 	return this->dist_tolerance;
 }
 
+double Ping::getDistance()
+{
+	return this->distance;
+}
 //Operation Functions
+bool Ping::Paused()
+{
+
+	if (((micros() - this->startTime) / 1000000 <= (this->runTime)*60) && (this->pausedState == true))// Converted to seconds
+	{
+		std::cout << (micros() - this->startTime) / 1000000 << std::endl;
+		return true;
+	}
+	else
+	{
+		this->pausedState = false;
+		return false;
+	}
+}
+
+void Ping::initStartTime()
+{
+	this->startTime = micros();
+	this->pausedState = true;
+}
+
 void Ping::updateDistance()
 {
-	int pin = this->CONTROL_pin;
+	int pin = this->controlPin;
 	pinMode(pin, OUTPUT);
 	digitalWrite(pin, 0); //reset to zero
 	delay(2);
 	//start of transmission
 	digitalWrite(pin, 1);
-	delayMicroseconds(5);
+	delayMicroseconds(10);
 	digitalWrite(pin, 0);
 	//Activate PING to scan
 	//Change pin mode to accept signals
 	pinMode(pin, INPUT);
-	delayMicroseconds(750);
-	double utime = 0;
-	while (digitalRead(pin) == 1)
-	{
-		delayMicroseconds(8);
-		utime += 8;
-	}
+	while (digitalRead(pin) == 0){}
+	long startTime = micros();
+	while (digitalRead(pin) == 1){}
 	//double dist = (utime / 2000) * SOUND_SPEED; // (t/2)*(344m/s)*(100cm/1m)*(1s/1000us)
-	this->distance = utime*SOUND_SPEED / 2000; //cm
-	delay(1000);
+	this->distance = (micros() - startTime) / 58; //cm
 }
 
 bool Ping::ObjectDetected()
 {
 	//IF distance > threshold return false else true
-	return (this->distance > this->dist_tolerance) ? false : true;
+	//convert cm to meters
+	this->updateDistance();
+	return ((this->distance)/100 > this->dist_tolerance) ? false : true;
 }

@@ -2,8 +2,8 @@
 class RelayBoard
 {
 private:
-	int controlPin, groundPin, bulbState;
-	double idleTemp,minTemp;
+	int controlPin, bulbState;
+	double idleTemp,minEnvTemp;
 	//send to the relay a number
 	void sendToRelay(int state);
 public:
@@ -14,11 +14,12 @@ public:
 		MAX = 2
 	};
 
-	RelayBoard(int control,int ground, double idleT,double minT);
+	RelayBoard(int control, double idleT,double minT);
 	~RelayBoard();
 	//Getter and setter
-	void setPins(int control, int ground);
-	void getPins(int &control, int &ground);
+	void setControlPin(int control);
+	unsigned int getControlPin();
+	void getTempSettings(double &idleT, double &minT);
 	//Control
 	void heatControl(double bulbTemp, double envTemp, bool objectPresent);
 };
