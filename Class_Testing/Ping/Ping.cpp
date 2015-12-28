@@ -6,7 +6,6 @@
 #include <iostream>
 #include "Ping.h"
 
-#define SOUND_SPEED 344 //speed of sound in meters per second
 
 Ping::Ping(int control, double tol, double runT)
 :controlPin(control), dist_tolerance(tol), distance(0), runTime(runT), startTime(0), pausedState(false)
@@ -43,20 +42,6 @@ double Ping::getDistance()
 	return this->distance;
 }
 //Operation Functions
-bool Ping::Paused()
-{
-
-	if (((micros() - this->startTime) / 1000000 <= (this->runTime)*60) && (this->pausedState == true))// Converted to seconds
-	{
-		std::cout << (micros() - this->startTime) / 1000000 << std::endl;
-		return true;
-	}
-	else
-	{
-		this->pausedState = false;
-		return false;
-	}
-}
 
 void Ping::initStartTime()
 {
@@ -88,6 +73,20 @@ bool Ping::ObjectDetected()
 {
 	//IF distance > threshold return false else true
 	//convert cm to meters
-	this->updateDistance();
-	return ((this->distance)/100 > this->dist_tolerance) ? false : true;
+	if (((micros() - this->startTime) / 1000000 <= (this->runTime) * 60) && (this->pausedState == true))// Converted to seconds
+	{
+		std::cout << (micros() - this->startTime) / 1000000 << std::endl;
+		return true;
+	}
+	else
+	{
+		this->updateDistance();
+		this->pausedState = ((this->distance) / 100 > this->dist_tolerance) ? false : true;
+		if (pausedState == true)
+		{
+			this->initStartTime();
+		}
+		return this->pausedState;
+	}
+	
 }
