@@ -75,7 +75,6 @@ bool Ping::ObjectDetected()
 	//convert cm to meters
 	if (((micros() - this->startTime) / 1000000 <= (this->runTime) * 60) && (this->pausedState == true))// Converted to seconds
 	{
-		std::cout << (micros() - this->startTime) / 1000000 << std::endl;
 		return true;
 	}
 	else
