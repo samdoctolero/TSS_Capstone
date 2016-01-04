@@ -15,7 +15,7 @@ struct config
 
 ConfigManager::ConfigManager()
 {
-	ReadConfigFile();
+	//ReadConfigFile();
 }
 
 
