@@ -2,6 +2,7 @@
 #include <wiringPiI2C.h>
 #include <cmath>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <iostream>
 #include "IR.h"

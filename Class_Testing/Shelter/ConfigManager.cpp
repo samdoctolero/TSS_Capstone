@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <stdlib.h>
+#include <iostream>
 
 using namespace std;
 
@@ -32,7 +33,8 @@ void ConfigManager::ReadConfigFile()
 	path.append("/configuration.txt");
 
 	//Open the configuration file
-	ifstream configFile(path);
+	ifstream configFile(path.c_str());
+	//cout << path << endl;
 	string line;
 	while (configFile.good())
 	{
@@ -49,19 +51,19 @@ void ConfigManager::ReadConfigFile()
 		//A bunch of if statements for each configuration item
 		if (configline.type.compare("ping_control") == 0)// 0 means it is equal
 		{
-			ping_ground = atoi(configline.value.c_str());
+			ping_control = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("ping_tolerance") == 0)
 		{
-			ping_power = atol(configline.value.c_str());
+			ping_tolerance = atol(configline.value.c_str());
 		}
 		else if (configline.type.compare("ping_run_time") == 0)
 		{
-			ping_control = atol(configline.value.c_str());
+			ping_run_time = atol(configline.value.c_str());
 		}
 		else if (configline.type.compare("temp_humid_pin") == 0)
 		{
-			ping_distance_tolerance = atoi(configline.value.c_str());
+			temp_humid_pin = atoi(configline.value.c_str());
 		}
 		else if (configline.type.compare("relay_control")==0)
 		{
@@ -73,7 +75,7 @@ void ConfigManager::ReadConfigFile()
 		}
 		else if (configline.type.compare("relay_minimum_temperature") == 0)
 		{
-			relay_env_min_temperature = atol(configline.value.c_str());
+			relay_minimum_temperature = atol(configline.value.c_str());
 		}
 
 		/*
