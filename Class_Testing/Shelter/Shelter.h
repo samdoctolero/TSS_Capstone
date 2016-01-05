@@ -16,6 +16,9 @@ private:
 	TempHumid  * tempHumid;
 
 	bool run;
+
+	void screenOn();
+	void screenOff();
 public:
 	Shelter();
 	~Shelter();

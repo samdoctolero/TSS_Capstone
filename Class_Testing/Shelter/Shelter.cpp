@@ -2,6 +2,8 @@
 #include <wiringPi.h>
 #include "Shelter.h"
 #include <stdint.h>
+#include <cstdlib.h>
+#include <unistd.h>
 //Devices
 #include "IR.h"
 #include "Ping.h"
@@ -24,10 +26,17 @@ Shelter::~Shelter()
 
 void Shelter::mainLoop()
 {
+	/*
 	while (run)
 	{
 		std::cout << "Success!" << std::endl;
 	}
+	*/
+
+	screenOff();
+	sleep(5);
+	screenOn();
+
 }
 
 void Shelter::initialize()
@@ -41,4 +50,20 @@ void Shelter::initialize()
 	tempHumid = new TempHumid(config.temp_humid_pin);
 	
 	wiringPiSetup();
+}
+
+void Shelter::screenOn()
+{
+	if (system("sudo tvservice -o") != 0)
+	{
+		std::cout << "Cannot turn OFF HDMI" << std::endl;
+	}
+}
+
+void Shelter::screenOff()
+{
+	if ((system("sudo tvservice -p") != 0) || system("sudo chvt 9 && sudo chvt 7") != 0 )
+	{
+		std::cout << "Cannot turn ON HDMI" << std::endl;
+	}
 }
