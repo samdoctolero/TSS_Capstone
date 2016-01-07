@@ -2,7 +2,7 @@
 #include <wiringPi.h>
 #include "Shelter.h"
 #include <stdint.h>
-#include <cstdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 //Devices
 #include "IR.h"
@@ -14,11 +14,12 @@
 Shelter::Shelter()
 {
 	run = true;
+	screenOn();
 }
 
 Shelter::~Shelter()
 {
-	delete bulbTemp;
+	delete bulbTemp; 
 	delete proxSensor;
 	delete bulbControl;
 	delete tempHumid;
@@ -29,13 +30,26 @@ void Shelter::mainLoop()
 	/*
 	while (run)
 	{
-		std::cout << "Success!" << std::endl;
+		//Data Gathering
+		double bulbT = bulbTemp->readObjTemp();
+		bool objDetected = proxSensor->ObjectDetected();
+		double envTemp = 0;
+		tempHumid->PassTempAndHumid(envTemp,NULL);
+		//Add xbee processing
+
+
+		//Processing & Output
+		bulbControl->heatControl(bulbT,envTemp,objDetected);
+		screenControl();
+
+		//Add gui updates
+
 	}
 	*/
 
-	screenOff();
-	sleep(5);
-	screenOn();
+	//screenOff();
+	//sleep(5);
+	//screenOn();
 
 }
 
@@ -52,18 +66,48 @@ void Shelter::initialize()
 	wiringPiSetup();
 }
 
-void Shelter::screenOn()
+void Shelter::screenOff()
 {
 	if (system("sudo tvservice -o") != 0)
 	{
 		std::cout << "Cannot turn OFF HDMI" << std::endl;
 	}
+	else
+	{
+		hdmiOn = false;
+	}
 }
 
-void Shelter::screenOff()
+void Shelter::screenOn()
 {
 	if ((system("sudo tvservice -p") != 0) || system("sudo chvt 9 && sudo chvt 7") != 0 )
 	{
 		std::cout << "Cannot turn ON HDMI" << std::endl;
 	}
+	else
+	{
+		hdmiOn = true;
+	}
+}
+
+void Shelter::screenControl(bool obj)
+{
+	//If an object exists turn on the screen, if it is off
+	// otherwise turn if off, if it is on
+	//hdmiOn is to avoid flickering screen due to constant turning on of the screen
+	if (obj == true)
+	{
+		if (hdmiOn == false)
+		{
+			screenOn();
+		}
+	}
+	else
+	{
+		if (hdmiOn == true)
+		{
+			screenOff();
+		}
+	}
+
 }

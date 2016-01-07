@@ -1,2 +1,2 @@
 wiringPi
-xbee
+libserial

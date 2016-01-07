@@ -13,12 +13,14 @@ private:
 	IR * bulbTemp;
 	Ping  * proxSensor;
 	RelayBoard * bulbControl;
-	TempHumid  * tempHumid;
+	TempHumid * tempHumid;
 
 	bool run;
+	bool hdmiOn;
 
 	void screenOn();
 	void screenOff();
+	void screenControl(bool obj);
 public:
 	Shelter();
 	~Shelter();
