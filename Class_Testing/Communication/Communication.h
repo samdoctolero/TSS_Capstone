@@ -1,17 +1,23 @@
 #pragma once
-#include <SerialStream.h>
 #include <string>
+#include "serial.h"
 class Communication
 {
+	struct Bus
+	{
+		int route;
+		int numStopsAway;
+		Bus * next;
+	};
 private:
-	SerialStream * serial_port;
 	int busRoute, numStopsAway;
-
+	t_serial * handle;
 public:
-
-	Communication(int control, double idleT,double minT);
+	Communication();
 	~Communication();
+	bool init(std::string msg);
 	void checkAndAcquireData(int &route, int &num);
-
+	void sendMsg(std::string msg);
+	std::string readMsg();
 };
 

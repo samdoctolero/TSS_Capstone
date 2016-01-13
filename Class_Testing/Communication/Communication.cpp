@@ -1,94 +1,108 @@
 #include "Communication.h"
-#include <SerialStream.h>
+//#include <wiringSerial.h>
+#include "serial.h"
 #include <iostream>
 #include <unistd.h>
 #include <cstdlib>
 #include <cctype>
-#include <string>
+#include <string.h>
+//#include <termios.h>
 
-#define DATA_CMD	'A'
-#define PORT_NAME	"/dev/ttyUSB0"
+//#define DATA_CMD	'A'
+//#define PORT_NAME	"/dev/ttyACM0"
+#define BAUD_RATE	115200
+std::string port_name = "/dev/ttyACM0";
 
+using namespace std;
 
 Communication::Communication()
 : busRoute(0), numStopsAway(0)
 {
-	serial_port = new SerialStream();
-	serial_port->Open(PORT_NAME);
-	if (!serial_port->good())
+	handle = serial_new();
+	serial_setBaud(handle, BAUD_RATE);
+	if (serial_open(handle, &port_name[0]) < 0)
 	{
-		std::cout << "Cannot open port " << PORT_NAME << std::endl;
-		exit(1);
+		cout << "Error. Cannot open port: "<< port_name << endl;
+		exit(0);
 	}
-	serial_port->SetBaudRate(SerialStreamBuf::BAUD_9600);
-	if (!serial_port->good())
+
+	/*
+	handle = serialOpen(PORT_NAME, BAUD_RATE);
+	if (handle < 0)
 	{
-		std::cout << "Error cannot set Baud Rate"<< std::endl;
-		exit(1);
+		std::cout << "Error. Cannot open port " << PORT_NAME << std::endl;
 	}
-	serial_port->SetCharSize(SerialStreamBuf::CHAR_SIZE_8);
-	if (!serial_port->good())
-	{
-		std::cout << "Error: Could not set the character size." << std::endl;
-		exit(1);
-	}
-	//
-	// Disable parity.
-	//
-	serial_port->SetParity(SerialStreamBuf::PARITY_NONE);
-	if (!serial_port->good())
-	{
-		std::cout << "Error: Could not disable the parity." << std::endl;
-		exit(1);
-	}
-	//
-	// Set the number of stop bits.
-	//
-	serial_port->SetNumOfStopBits(1);
-	if (!serial_port->good())
-	{
-		std::cout << "Error: Could not set the number of stop bits."
-			<< std::endl;
-		exit(1);
-	}
-	//
-	// Turn off hardware flow control.
-	//
-	serial_port->SetFlowControl(SerialStreamBuf::FLOW_CONTROL_NONE);
-	if (!serial_port-->good())
-	{
-		std::cout << "Error: Could not use hardware flow control."
-			<< std::endl;
-		exit(1);
-	}
-	//
-	// Do not skip whitespace characters while reading from the
-	// serial port.
-	//
-	// serial_port.unsetf( std::ios_base::skipws ) ;
-	//
-	// Wait for some data to be available at the serial port.
-	//
+	*/
+	/*
+	struct termios options;
+	tcgetattr(handle, &options);
+	options.c_cflag |= (CLOCAL | CREAD); //enable the receiver and set local mode
+	options.c_cflag &= ~PARENB;			//No parity bit
+	options.c_cflag &= ~CSTOPB;			// 1 stop bit
+	options.c_cflag &= ~CSIZE;			//Mask Data size
+	options.c_cflag |= CS8;				//Select 8 data bits
+	options.c_cflag &= ~CRTSCTS;		// Disable hardware flow control
+	//enable data to be processed as raw input
+	options.c_lflag &= ~(ICANON | ECHO | ISIG);
+	// set new attributes
+	tcsetattr(handle, TCSANOW, &options);
+	*/
 }
-
-
 
 Communication::~Communication()
 {
-	SerialStream->Close();
-	delete SerialStream;
+	/*
+	serialClose(handle);
+	//Close all the Bus variables in memory
+	*/
 }
 
+void Communication::sendMsg(string msg)
+{
+	//serialPrintf(handle, &msg[0]);
+}
+
+string Communication::readMsg()
+{
+	/*
+	string data = "";
+	while (serialDataAvail(handle) > 0)
+	{
+		cout << "Data available" << endl;
+		char t = serialGetchar(handle);
+		data.append(&t);
+	}
+	*/
+}
+
+bool Communication::init(string msg)
+{
+	/*
+	serialPrintf(handle, &msg[0]);
+	//sleep(5);
+	cout << "Waiting for echo..." << endl;
+	//cout << msg << endl;
+	char echo = serialGetchar(handle);
+	cout << echo << endl;
+	if (echo != '+')
+	{
+		return false;
+	}
+	return true;
+	*/
+}
 void Communication::checkAndAcquireData(int &route, int &num)
 {
+	/*
 	route = busRoute;
 	num = numStopsAway;
-	if (serial_port->rdbuf()->in_avail() > 0)
+	if (serialDataAvail(handle)>0)
 	{
 		char first_byte; 
-		serial_port->get(first_byte);
+		first_byte = serialGetchar(handle);
 		if (first_byte != DATA_CMD)
 		{
+			cout << "Not correct starting data line" << endl;
 			return;
 		}
 		//Data format: AxxxBxxN
@@ -96,32 +110,29 @@ void Communication::checkAndAcquireData(int &route, int &num)
 		char t;
 		do
 		{
-			serial_port->get(t);
+			t = serialGetchar(handle);
 			busNum += t;
 		} while (t != 'B');
 		
 		string stopAway = "";
 		do
 		{
-			serial_port->get(t);
+			t = serialGetchar(handle);
 			stopAway += t;
 		} while (t != 'N');
 
 		//flush the rest of the data
-		while (serial_port->rdbuf()->in_avail() > 0)
-		{
-			char x;
-			serial_port->get(x);
-		}
+		serialFlush(handle);
 
-		if (isdigit(stopAway) && isdigit(busNum))
-		{
-			busRoute = stoi(busNum);
-			numStopsAway = stoi(stopAway);
+		//if (isdigit(stopAway) && isdigit(busNum))
+		//{
+			busRoute = atoi(busNum.c_str());
+			numStopsAway = atoi(stopAway.c_str());
 			route = busRoute;
 			num = numStopsAway;
-		}
+		//}
 
 	}
 	return;
+	*/
 }

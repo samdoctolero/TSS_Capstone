@@ -8,9 +8,22 @@ using namespace std;
 
 int main()
 {
-	Communication busInfo();
+	Communication busInfo;
+	if (busInfo.init("SR001R010R052P0040P0001M0001X") == true)
+	{
+		cout << "Initialization complete!" << endl;
+	}
+	else
+	{
+		cout << "Initialization failed..." << endl;
+	}
 
-	cout << "It worked... i guess" << endl;
-
+	/*
+	while (true)
+	{
+		busInfo.sendMsg("working?");
+		cout << busInfo.readMsg() << endl;
+	}
+	*/
 	return 0;
 }
