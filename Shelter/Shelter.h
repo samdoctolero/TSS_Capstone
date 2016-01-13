@@ -17,10 +17,12 @@ private:
 
 	bool run;
 	bool hdmiOn;
+	int	 stopPin;
 
 	void screenOn();
 	void screenOff();
 	void screenControl(bool obj);
+	void stopButton(bool & check);
 public:
 	Shelter();
 	~Shelter();

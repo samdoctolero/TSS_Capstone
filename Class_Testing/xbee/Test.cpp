@@ -14,5 +14,9 @@ int main()
 	{
 		cout << "Error. Cannot connect to XBee device" << endl;
 	}
+	else
+	{
+		cout << "Connection successful" << endl;
+	}
 	return 0;
 }

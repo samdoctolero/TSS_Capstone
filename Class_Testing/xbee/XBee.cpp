@@ -25,7 +25,7 @@ XBee::~XBee()
 
 bool XBee::init()
 {
-	if (xbee_setup(&xbee, "xbee1", "/dev/ttyUSB0", 9600) == XBEE_ENOME)
+	if (xbee_setup(&xbee, "xbee1", "/dev/ttyUSB0", 9600) != 0)
 	{
 		return false;
 	}

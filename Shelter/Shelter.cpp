@@ -30,6 +30,8 @@ void Shelter::mainLoop()
 	/*
 	while (run)
 	{
+		//Check if stop button is pressed:
+
 		//Data Gathering
 		double bulbT = bulbTemp->readObjTemp();
 		bool objDetected = proxSensor->ObjectDetected();
@@ -47,6 +49,12 @@ void Shelter::mainLoop()
 	}
 	*/
 
+	while (run)
+	{
+		stopButton(run);
+	}
+
+	cout << "Safely exited the loop" << endl;
 	//screenOff();
 	//sleep(5);
 	//screenOn();
@@ -58,12 +66,19 @@ void Shelter::initialize()
 	ConfigManager config;
 	config.ReadConfigFile();
 	
+	//allocate memory and create new instances
+	//of each classes
 	bulbTemp = new IR();
 	proxSensor = new Ping(config.ping_control, config.ping_tolerance, config.ping_run_time);
 	bulbControl = new RelayBoard(config.relay_control, config.relay_idle_temperature, config.relay_minimum_temperature);
 	tempHumid = new TempHumid(config.temp_humid_pin);
-	
+	stopPin = config.stopPin;
+
+	//wiringPi creates the connections in the backend
 	wiringPiSetup();
+
+	//inialize all the classes
+	pinMode(stopPin, INPUT);
 }
 
 void Shelter::screenOff()
@@ -110,4 +125,14 @@ void Shelter::screenControl(bool obj)
 		}
 	}
 
+}
+
+void Shelter::stopButton(bool & check)
+{
+	if (digitalRead(stopPin) == 1)
+	{
+		//if the buttonn is pressed
+		//return a false
+		check = false;
+	}
 }
