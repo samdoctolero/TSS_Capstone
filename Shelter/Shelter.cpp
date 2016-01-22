@@ -4,12 +4,15 @@
 #include <stdint.h>
 #include <cstdlib>
 #include <unistd.h>
+#include <cstdio>
 //Devices
 #include "IR.h"
 #include "Ping.h"
 #include "RelayBoard.h"
 #include "TempHumid.h"
 #include "ConfigManager.h"
+
+using namespace std;
 
 Shelter::Shelter()
 {
@@ -31,18 +34,24 @@ void Shelter::mainLoop()
 	while (run)
 	{
 		//Check if stop button is pressed:
-		stopButton(&run);
+		//stopButton(&run);
 		//Data Gathering
-		double bulbT = bulbTemp->readObjTemp();
-		bool objDetected = proxSensor->ObjectDetected();
+		//double bulbT = 0;
+		//bulbT = (bulbTemp->readObjTemp());
+		//printf("Bulb Temp: %d\n",(*bulbTemp).readObjTemp());
+		
+		//bool objDetected = proxSensor->ObjectDetected();
+		//printf("Result: %d\n",objDetected);
+		/*
 		double envTemp = 0;
-		tempHumid->PassTempAndHumid(envTemp,NULL);
+		double null = 0;
+		tempHumid->PassTempAndHumid(envTemp,null);
 		//Add xbee processing
 
 
 		//Processing & Output
 		bulbControl->heatControl(bulbT,envTemp,objDetected);
-		screenControl();
+		screenControl(objDetected);
 
 		//Add gui updates
 
@@ -63,12 +72,13 @@ void Shelter::mainLoop()
 
 		printf("Environment Temperature: %d\n",envTemp);
 
-		stopButton(&run);
+		stopButton(run);
+		*/
 	}
 	
 
 	//screenOff();
-	//sleep(5);
+	sleep(1000);
 	//screenOn();
 
 }
