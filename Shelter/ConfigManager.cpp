@@ -53,6 +53,10 @@ void ConfigManager::ReadConfigFile()
 		{
 			ping_control = atoi(configline.value.c_str());
 		}
+		else if (configline.type.compare("stop_pin") == 0)
+		{
+			stop_pin = atoi(configline.value.c_str());
+		}
 		else if (configline.type.compare("ping_tolerance") == 0)
 		{
 			ping_tolerance = atol(configline.value.c_str());
@@ -76,6 +80,10 @@ void ConfigManager::ReadConfigFile()
 		else if (configline.type.compare("relay_minimum_temperature") == 0)
 		{
 			relay_minimum_temperature = atol(configline.value.c_str());
+		}
+		else if (configline.type.compare("ir_address") == 0)
+		{
+			ir_address = atoi(configline.value.c_str());
 		}
 
 		/*

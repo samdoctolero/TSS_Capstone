@@ -5,15 +5,16 @@
 
 #include <iostream>
 
-#define _PAUSE_SEC	3*1000000 //3 seconds in microseconds
+#define _PAUSE_SEC	3000000 //3 seconds in microseconds
 
 TempHumid::TempHumid(int pin)
 :Temperature(0), RelHumidity(0), startTime(0), dataPin(pin)
 {
-	while ((this->Read()) == -1)
+	while ((Read()) == -1)
 	{
 		delay(2500); //If it errors out repeat the process again after a pause
 	}
+	//std::cout << "Created instance..." << std::endl;
 }
 
 
@@ -24,12 +25,12 @@ TempHumid::~TempHumid()
 
 void TempHumid::initStartTime()
 {
-	this->startTime = micros();
+	startTime = micros();
 }
 
 bool TempHumid::IsPaused()
 {
-	if ((micros() - this->startTime) <= _PAUSE_SEC)
+	if (std::abs(micros() - startTime) <= _PAUSE_SEC)
 	{
 		return true;
 	}
@@ -53,11 +54,12 @@ int TempHumid::binary2decimal(int bin)
 
 int TempHumid::Read()
 {
-	int pin = this->dataPin;
+
+	int pin = dataPin;
 	pinMode(pin, INPUT);
 	if (digitalRead(pin) == 1) //If the dataPin is high then the pin is free to use
 	{
-
+		//std::cout << "Ready to read data..." << std::endl;
 		pinMode(pin, OUTPUT);//Set the pin to output to command the sensor
 		digitalWrite(pin, 0); //Pull low for 5ms
 		delay(10); //pause for 10 milliseconds
@@ -78,11 +80,12 @@ int TempHumid::Read()
 				while (digitalRead(pin) == 1)
 				{
 					delayMicroseconds(2);
-					//std::cout << "While 5 Clear " << i << " " << j << std::endl;
+					////std::cout << "While 5 Clear " << i << " " << j << std::endl;
 					_t+=2;
 					if (_t > 100) //An Error has occured just return the previous value
 					{
-						this->initStartTime();//Initialize pause time start
+						//std::cout << "Error" << std::endl;
+						initStartTime();//Initialize pause time start
 						return -1;
 					}
 				}
@@ -99,19 +102,22 @@ int TempHumid::Read()
 			sensor_data[i] = sensor_byte;
 		}
 
-		this->initStartTime();//Initialize pause time start
+		initStartTime();//Initialize pause time start
 		//Checksum
 		if (((sensor_data[0] + sensor_data[1] + sensor_data[2] + sensor_data[3]) & 0xff) != sensor_data[4])
 		{
+			//std::cout << "Invalid checksum" << std::endl;
 			return 0; //If checksum is invalid then just return the built in temp and humidity
 		}
 		int humidity = (sensor_data[0] << 8) + sensor_data[1];
 		int temperature = (sensor_data[2] << 8) + sensor_data[3];
-		this->RelHumidity = ((double)humidity) / 10;
-		this->Temperature = ((double)temperature) / 10;
+		RelHumidity = ((double)humidity) / 10;
+		Temperature = ((double)temperature) / 10;
+		//std::cout << "Got temperature" << std::endl;
 	}
 	else //if the dataPin is occuppied just return the built-in temp and humidity
 	{
+		//std::cout << "Pin Busy" << std::endl;
 		return 0;
 	}
 	return 0;
@@ -119,21 +125,22 @@ int TempHumid::Read()
 
 void TempHumid::PassTempAndHumid(double &temp, double &rHum)
 {
-	temp = this->Temperature;
-	rHum = this->RelHumidity;
-	if (this->IsPaused())
+	temp = Temperature;
+	rHum = RelHumidity;
+	if (IsPaused())
 	{
-		std::cout << "Paused" << std::endl;
+		//std::cout << "Paused" << std::endl;
 		return;
 	}
 	else
 	{
-		while ((this->Read()) == -1)
+
+		while ((Read()) == -1)
 		{
 			delay(2500);//If it errors out repeat the process again after a pause
 		}
-		temp = this->Temperature;
-		rHum = this->RelHumidity;
+		temp = Temperature;
+		rHum = RelHumidity;
 	}
 	return;
 }

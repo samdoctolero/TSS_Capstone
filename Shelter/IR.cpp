@@ -6,7 +6,7 @@
 #include <iostream>
 #include "IR.h"
 
-#define ID 0x40
+//#define ID 0x40
 #define TMP006_MANID 0xFE
 #define TMP006_DEVID 0xFF
 
@@ -34,11 +34,17 @@
 #define TMP006_VOBJ  0x00
 #define TMP006_TAMB	 0x01
 
-IR::IR()
+IR::IR(int id)
+:ID(id)
+{
+}
+
+bool IR::init()
 {
 	if ((FD = wiringPiI2CSetup(ID)) < 0)
 	{
-		std::cout << "Error. Cannot initialize i2c" << std::endl;
+		std::cerr << "Cannot inialize IR" << std::endl;
+		return false;
 	}
 	else
 	{
@@ -47,12 +53,11 @@ IR::IR()
 		int16_t did = read16(this->FD, TMP006_DEVID);
 		if ((mid != 0x5449) || (did != 0x67))
 		{
-			std::cout << "Error. Wrong IDs" << std::endl;
-			printf("ManID: %X\nDevID: %x\n", mid, did);
+			std::cerr << "Cannot inialize IR. Incorrect IDs" << std::endl;
+			return false;
 		}
 	}
 }
-
 IR::~IR()
 {
 }

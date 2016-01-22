@@ -17,6 +17,16 @@ int main()
 	else
 	{
 		cout << "Connection successful" << endl;
+		busInfo.sendData("Hello Arduino. Do you copy?\n");
+		/*
+		while (true)
+		{
+			cout << "In the loop" << endl;
+			busInfo.dispData();
+			usleep(1000000);
+		}
+		*/
 	}
+	cout << "Exited loop" << endl;
 	return 0;
 }

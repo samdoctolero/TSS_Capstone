@@ -14,7 +14,7 @@
 Shelter::Shelter()
 {
 	run = true;
-	screenOn();
+	//screenOn();
 }
 
 Shelter::~Shelter()
@@ -27,11 +27,11 @@ Shelter::~Shelter()
 
 void Shelter::mainLoop()
 {
-	/*
+	
 	while (run)
 	{
 		//Check if stop button is pressed:
-
+		stopButton(&run);
 		//Data Gathering
 		double bulbT = bulbTemp->readObjTemp();
 		bool objDetected = proxSensor->ObjectDetected();
@@ -46,15 +46,27 @@ void Shelter::mainLoop()
 
 		//Add gui updates
 
-	}
-	*/
 
-	while (run)
-	{
-		stopButton(run);
-	}
+		//check again if stop button is pressed
 
-	cout << "Safely exited the loop" << endl;
+
+		//Test
+		printf("IR Temperature: %d\n",bulbT);
+		if (objDetected)
+		{
+			printf("Object Detected\n");
+		}
+		else
+		{
+			printf("No Object Detected\n");
+		}
+
+		printf("Environment Temperature: %d\n",envTemp);
+
+		stopButton(&run);
+	}
+	
+
 	//screenOff();
 	//sleep(5);
 	//screenOn();
@@ -68,17 +80,18 @@ void Shelter::initialize()
 	
 	//allocate memory and create new instances
 	//of each classes
-	bulbTemp = new IR();
+	bulbTemp = new IR(config.ir_address);
 	proxSensor = new Ping(config.ping_control, config.ping_tolerance, config.ping_run_time);
 	bulbControl = new RelayBoard(config.relay_control, config.relay_idle_temperature, config.relay_minimum_temperature);
 	tempHumid = new TempHumid(config.temp_humid_pin);
-	stopPin = config.stopPin;
+	stopPin = config.stop_pin;
 
 	//wiringPi creates the connections in the backend
 	wiringPiSetup();
 
 	//inialize all the classes
 	pinMode(stopPin, INPUT);
+
 }
 
 void Shelter::screenOff()
@@ -129,7 +142,9 @@ void Shelter::screenControl(bool obj)
 
 void Shelter::stopButton(bool & check)
 {
-	if (digitalRead(stopPin) == 1)
+	int sig = digitalRead(stopPin);
+	//std::cout << sig << std::endl;
+	if (sig == 1)
 	{
 		//if the buttonn is pressed
 		//return a false

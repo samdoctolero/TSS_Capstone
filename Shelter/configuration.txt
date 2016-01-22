@@ -1,4 +1,5 @@
 ﻿ITEM,VALUE,DESCRIPTION
+stop_pin, 4, Stop pin to control the program to exit
 ping_control, 1, Control pin for the proximity sensor (according to wiringPi pinout)
 ping_tolerance, 3, Distance tolerance for the proximity sensor in meters
 ping_run_time, 5, The proximity sensor will output object detected for this many minutes
@@ -6,3 +7,4 @@ temp_humid_pin, 7, Data pin for the Temperature and Humidity sensor (according t
 relay_control, 0, Control pin for the relay board (according to the wiringPi pinout)
 relay_idle_temperature, 100, Idle temperature for the bulb in degrees celcius
 relay_minimum_temperature, -10, Minimum tempeterature to switch the bulb ON in degrees celcius
+ir_address, 0x40, SCL and SDA address of the device
