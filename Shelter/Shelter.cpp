@@ -37,8 +37,8 @@ void Shelter::mainLoop()
 		//stopButton(&run);
 		//Data Gathering
 		//double bulbT = 0;
-		//bulbT = (bulbTemp->readObjTemp());
-		//printf("Bulb Temp: %d\n",(*bulbTemp).readObjTemp());
+		bulbT = (bulbTemp->readObjTemp());
+		printf("Bulb Temp: %d\n",(*bulbTemp).readObjTemp());
 		
 		//bool objDetected = proxSensor->ObjectDetected();
 		//printf("Result: %d\n",objDetected);

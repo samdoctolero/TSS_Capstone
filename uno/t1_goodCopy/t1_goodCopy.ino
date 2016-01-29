@@ -30,6 +30,8 @@ void setup()
 
 void loop()
 {
+  
+  /*
   if (Serial.available())
   { // If data comes in from serial monitor, send it out to XBee
     String d = Serial.readString();
@@ -44,9 +46,10 @@ void loop()
     //}
     Serial.write(XBee.read());
   }
-
-  XBee.print("OK");
-  //Serial.println("OK");
+  */
+  XBee.print("s00a000001n");
+  Serial.println("s00a000001n");
+  delay(1000);
 }
 
 String hexToStr()

@@ -7,11 +7,11 @@
 using namespace std;
 
 void myCB(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt, void **data) {
-	if ((*pkt)->dataLen == 0) {
+	if (this->(*pkt)->dataLen == 0) {
 		printf("too short...\n");
 		return;
 	}
-	printf("rx: [%s]\n", (*pkt)->data);
+	printf("rx: [%s]\n", this->(*pkt)->data);
 }
 
 XBee::XBee()
@@ -38,7 +38,7 @@ XBee::XBee()
 
 XBee::~XBee()
 {
-	xbee_conEnd(nextCon);
+	//xbee_conEnd(nextCon);
 	xbee_conEnd(prevCon);
 	xbee_shutdown(xbee);
 }
@@ -52,7 +52,7 @@ bool XBee::init()
 		return false;
 	}
 
-	if (xbee_conNew(xbee, &prevCon, "16-bit Data", &prevShelter) != XBEE_ENONE)
+	if (xbee_conNew(xbee, &prevCon, "64-bit Data", &prevShelter) != XBEE_ENONE)
 	{
 		cout << "Cannot connect to other xbees" << endl;
 		return false;
@@ -61,6 +61,7 @@ bool XBee::init()
 	struct xbee_conSettings settings;
 	xbee_conSettings(prevCon, NULL, &settings);
 	settings.disableAck = 1;
+	settings.catchAll = 1;
 	xbee_conSettings(prevCon, &settings, NULL);
 	
 	//if (xbee_conNew(xbee, &nextCon, "64-bit Data", &nextShelter) != 0)
@@ -78,14 +79,14 @@ void XBee::sendData(string msg)
 
 void XBee::dispData()
 {
-	xbee_t_conCallback  CB;
-	cout << CB << endl;
-	xbee_err ret;
-	if ((ret = xbee_conCallbackSet(prevCon,CB, NULL)) != XBEE_ENONE) {
-		xbee_log(xbee, -1, "xbee_conCallbackSet() returned: %d", ret);
-		return;
-	}
-	cout << pkt->data << endl;
+	//xbee_t_conCallback  CB;
+	//cout << CB << endl;
+	//xbee_err ret;
+	//if ((ret = xbee_conCallbackSet(prevCon,CB, NULL)) != XBEE_ENONE) {
+		//xbee_log(xbee, -1, "xbee_conCallbackSet() returned: %d", ret);
+		//return;
+	//}
+	//cout << pkt->data << endl;
 	//usleep(300000000);
 	/*
 	string my_info;
@@ -100,6 +101,16 @@ void XBee::dispData()
 	}
 	*/
 	//cout << "Here" << endl;
+
+	if ((xbee_conRx(prevCon,pkt,NULL) != XBEE_ENONE))
+	{
+		fprintf(stderr, "xbee_conRx(): %d - %s\n", ret, xbee_errorToStr(ret));
+		exit(1);
+	}
+	else
+	{
+		cout << pkt->data << endl;
+	}
 
 }
 
