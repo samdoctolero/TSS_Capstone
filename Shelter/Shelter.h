@@ -11,7 +11,7 @@ class Shelter
 {
 private:
 	IR * bulbTemp;
-	Ping  * proxSensor;
+	Ping *  proxSensor;
 	RelayBoard * bulbControl;
 	TempHumid * tempHumid;
 

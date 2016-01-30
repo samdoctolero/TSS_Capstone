@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <cstdio>
+#include <stdio.h>
 //Devices
 #include "IR.h"
 #include "Ping.h"
@@ -22,10 +23,12 @@ Shelter::Shelter()
 
 Shelter::~Shelter()
 {
+	
 	delete bulbTemp; 
 	delete proxSensor;
 	delete bulbControl;
 	delete tempHumid;
+	
 }
 
 void Shelter::mainLoop()
@@ -33,52 +36,17 @@ void Shelter::mainLoop()
 	
 	while (run)
 	{
-		//Check if stop button is pressed:
-		//stopButton(&run);
-		//Data Gathering
-		//double bulbT = 0;
-		bulbT = (bulbTemp->readObjTemp());
-		printf("Bulb Temp: %d\n",(*bulbTemp).readObjTemp());
-		
-		//bool objDetected = proxSensor->ObjectDetected();
-		//printf("Result: %d\n",objDetected);
-		/*
-		double envTemp = 0;
-		double null = 0;
-		tempHumid->PassTempAndHumid(envTemp,null);
-		//Add xbee processing
-
-
-		//Processing & Output
-		bulbControl->heatControl(bulbT,envTemp,objDetected);
-		screenControl(objDetected);
-
-		//Add gui updates
-
-
-		//check again if stop button is pressed
-
-
-		//Test
-		printf("IR Temperature: %d\n",bulbT);
-		if (objDetected)
-		{
-			printf("Object Detected\n");
-		}
-		else
-		{
-			printf("No Object Detected\n");
-		}
-
-		printf("Environment Temperature: %d\n",envTemp);
-
-		stopButton(run);
-		*/
+		double envTemp, null;
+		bool objDetected = proxSensor->ObjectDetected();
+		cout << "Obj:" << objDetected << endl;
+		tempHumid->PassTempAndHumid(envTemp, null);
+		cout << envTemp << endl;
+		bulbControl->heatControl(10, envTemp, objDetected);
+		sleep(3);
 	}
 	
 
 	//screenOff();
-	sleep(1000);
 	//screenOn();
 
 }
@@ -90,8 +58,8 @@ void Shelter::initialize()
 	
 	//allocate memory and create new instances
 	//of each classes
-	bulbTemp = new IR(config.ir_address);
-	proxSensor = new Ping(config.ping_control, config.ping_tolerance, config.ping_run_time);
+	bulbTemp = new IR();
+	proxSensor =  new Ping(config.ping_control, config.ping_tolerance, config.ping_run_time);
 	bulbControl = new RelayBoard(config.relay_control, config.relay_idle_temperature, config.relay_minimum_temperature);
 	tempHumid = new TempHumid(config.temp_humid_pin);
 	stopPin = config.stop_pin;
@@ -100,6 +68,8 @@ void Shelter::initialize()
 	wiringPiSetup();
 
 	//inialize all the classes
+	pinMode(stopPin, OUTPUT);
+	digitalWrite(stopPin, HIGH);
 	pinMode(stopPin, INPUT);
 
 }
@@ -154,7 +124,7 @@ void Shelter::stopButton(bool & check)
 {
 	int sig = digitalRead(stopPin);
 	//std::cout << sig << std::endl;
-	if (sig == 1)
+	if (sig == 0)
 	{
 		//if the buttonn is pressed
 		//return a false

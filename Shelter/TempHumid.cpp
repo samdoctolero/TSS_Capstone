@@ -1,7 +1,7 @@
 #include "TempHumid.h"
 #include <cmath>
 #include <wiringPi.h>
-#include <//stdint.h>
+#include <stdint.h>
 
 #include <iostream>
 

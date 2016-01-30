@@ -89,6 +89,7 @@ int16_t IR::readRawDieTemperature(unsigned int addr)
 {
 	int16_t raw = read16(addr, TMP006_TAMB);
 	raw >>= 2;
+	//printf("Tdie Raw: %d\n",raw);
 	return raw;
 }
 
@@ -96,14 +97,18 @@ int16_t IR::readRawVoltage(unsigned int addr)
 {
 	int16_t raw = read16(addr, TMP006_VOBJ);
 	raw >>= 2;
+	//printf("Volt Raw: %d\n",raw);
 	return raw;
 }
 
 double IR::readObjTemp()
 {
-	double Tdie = readRawDieTemperature(this->FD);
-	double Vobj = readRawVoltage(this->FD);
-
+	double Tdie = 0;
+	Tdie = (double)readRawDieTemperature(FD);
+	printf("Tdie: %d\n",Tdie);
+	double Vobj = 0;
+	Vobj = (double)readRawVoltage(FD);
+	printf("Vobj: %d\n", Vobj);
 	Vobj *= 156.25;  // 156.25 nV per LSB
 	Vobj /= 1000; // nV -> uV
 	Vobj /= 1000; // uV -> mV
@@ -128,12 +133,13 @@ double IR::readObjTemp()
 
 	Tobj -= 273.15; // Kelvin -> *C
 
+	//printf("Object Temperature: %d\n",Tobj);
 	return Tobj;
 }
 
 double IR::readDieTemp()
 {
-	double Tdie = readRawDieTemperature(this->FD);
+	double Tdie = readRawDieTemperature(FD);
 	Tdie *= 0.03125; // convert to celsius
 	return Tdie;
 }
