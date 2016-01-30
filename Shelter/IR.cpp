@@ -6,7 +6,7 @@
 #include <iostream>
 #include "IR.h"
 
-//#define ID 0x40
+#define ID 0x40
 #define TMP006_MANID 0xFE
 #define TMP006_DEVID 0xFF
 
@@ -34,17 +34,11 @@
 #define TMP006_VOBJ  0x00
 #define TMP006_TAMB	 0x01
 
-IR::IR(int id)
-:ID(id)
-{
-}
-
-bool IR::init()
+IR::IR()
 {
 	if ((FD = wiringPiI2CSetup(ID)) < 0)
 	{
-		std::cerr << "Cannot inialize IR" << std::endl;
-		return false;
+		std::cout << "Error. Cannot initialize i2c" << std::endl;
 	}
 	else
 	{
@@ -53,11 +47,12 @@ bool IR::init()
 		int16_t did = read16(this->FD, TMP006_DEVID);
 		if ((mid != 0x5449) || (did != 0x67))
 		{
-			std::cerr << "Cannot inialize IR. Incorrect IDs" << std::endl;
-			return false;
+			std::cout << "Error. Wrong IDs" << std::endl;
+			printf("ManID: %X\nDevID: %x\n", mid, did);
 		}
 	}
 }
+
 IR::~IR()
 {
 }
@@ -87,7 +82,7 @@ int16_t IR::read16(unsigned int addr, unsigned int reg)
 
 void IR::config_sensor(unsigned int addr, unsigned int samples)
 {
-	wiringPiI2CWriteReg16(this->FD, addr, samples);
+	wiringPiI2CWriteReg16(FD, addr, samples);
 }
 
 int16_t IR::readRawDieTemperature(unsigned int addr)
@@ -100,7 +95,7 @@ int16_t IR::readRawDieTemperature(unsigned int addr)
 int16_t IR::readRawVoltage(unsigned int addr)
 {
 	int16_t raw = read16(addr, TMP006_VOBJ);
-	
+	raw >>= 2;
 	return raw;
 }
 

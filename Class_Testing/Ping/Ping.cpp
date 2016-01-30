@@ -19,12 +19,12 @@ Ping::~Ping()
 //Getters and Setters
 void Ping::setControlPin(int control)
 {
-	this->controlPin = control;
+	controlPin = control;
 }
 
 void Ping::setTolerance(double dist)
 {
-	this->dist_tolerance = dist;
+	dist_tolerance = dist;
 }
 
 unsigned int Ping::getControlPin()
@@ -34,24 +34,24 @@ unsigned int Ping::getControlPin()
 
 double Ping::getTolerance()
 {
-	return this->dist_tolerance;
+	return dist_tolerance;
 }
 
 double Ping::getDistance()
 {
-	return this->distance;
+	return distance;
 }
 //Operation Functions
 
 void Ping::initStartTime()
 {
-	this->startTime = micros();
-	this->pausedState = true;
+	startTime = micros();
+	pausedState = true;
 }
 
 void Ping::updateDistance()
 {
-	int pin = this->controlPin;
+	int pin = controlPin;
 	pinMode(pin, OUTPUT);
 	digitalWrite(pin, 0); //reset to zero
 	delay(2);
@@ -73,14 +73,14 @@ bool Ping::ObjectDetected()
 {
 	//IF distance > threshold return false else true
 	//convert cm to meters
-	if (((micros() - this->startTime) / 1000000 <= (this->runTime) * 60) && (this->pausedState == true))// Converted to seconds
+	if (((micros() - startTime) / 1000000 <= (runTime) * 60) && (pausedState == true))// Converted to seconds
 	{
 		return true;
 	}
 	else
 	{
-		this->updateDistance();
-		this->pausedState = ((this->distance) / 100 > this->dist_tolerance) ? false : true;
+		updateDistance();
+		pausedState = ((distance) / 100 > dist_tolerance) ? false : true;
 		if (pausedState == true)
 		{
 			this->initStartTime();

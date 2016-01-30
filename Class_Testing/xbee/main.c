@@ -67,12 +67,18 @@ int main(void) {
 	settings.disableAck = 1;
 	xbee_conSettings(con, &settings, NULL);
 
+	void * p;
 	printf("Getting callback\n");
-	if ((ret = xbee_conCallbackSet(con, myCB, NULL)) != XBEE_ENONE) {
+	if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)&p)) != XBEE_ENONE) {
 		xbee_log(xbee, -1, "xbee_conCallbackSet() returned: %d", ret);
 		return ret;
 	}
 	printf("Done callback\n");
+	if (p == NULL)
+	{
+		printf("Empty p\n");
+		printf("%d", ret);
+	}
 	//usleep(30000000);
 
 	if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {

@@ -10,6 +10,7 @@ private:
 	bool pausedState; //Internal boolean paused state
 
 	void updateDistance(); //update the current distance
+	void initStartTime();
 
 public:
 	Ping(int control, double tol, double runT);
@@ -20,9 +21,7 @@ public:
 	void setTolerance(double dist); //set distance tolerance or threshold
 	unsigned int getControlPin(); //grab the pin numbers
 	double getTolerance(); // grab distance tolerance or threshold
-	bool ObjectDetected();
+	bool ObjectDetected(); //This will be used for the shelter
 	double getDistance();
-	void initStartTime();
-	bool Paused();
 };
 

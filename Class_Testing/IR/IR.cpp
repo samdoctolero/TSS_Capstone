@@ -82,7 +82,7 @@ int16_t IR::read16(unsigned int addr, unsigned int reg)
 
 void IR::config_sensor(unsigned int addr, unsigned int samples)
 {
-	wiringPiI2CWriteReg16(this->FD, addr, samples);
+	wiringPiI2CWriteReg16(FD, addr, samples);
 }
 
 int16_t IR::readRawDieTemperature(unsigned int addr)
@@ -95,7 +95,7 @@ int16_t IR::readRawDieTemperature(unsigned int addr)
 int16_t IR::readRawVoltage(unsigned int addr)
 {
 	int16_t raw = read16(addr, TMP006_VOBJ);
-	
+	raw >>= 2;
 	return raw;
 }
 

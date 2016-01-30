@@ -47,8 +47,8 @@ void loop()
     Serial.write(XBee.read());
   }
   */
-  XBee.print("s00a000001n");
-  Serial.println("s00a000001n");
+  XBee.print("s00a000003n");
+  Serial.println("s00a000003n");
   delay(1000);
 }
 

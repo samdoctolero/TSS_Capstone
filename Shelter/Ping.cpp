@@ -6,7 +6,6 @@
 #include <iostream>
 #include "Ping.h"
 
-#define SOUND_SPEED 344 //speed of sound in meters per second
 
 Ping::Ping(int control, double tol, double runT)
 :controlPin(control), dist_tolerance(tol), distance(0), runTime(runT), startTime(0), pausedState(false)
@@ -20,12 +19,12 @@ Ping::~Ping()
 //Getters and Setters
 void Ping::setControlPin(int control)
 {
-	this->controlPin = control;
+	controlPin = control;
 }
 
 void Ping::setTolerance(double dist)
 {
-	this->dist_tolerance = dist;
+	dist_tolerance = dist;
 }
 
 unsigned int Ping::getControlPin()
@@ -35,38 +34,24 @@ unsigned int Ping::getControlPin()
 
 double Ping::getTolerance()
 {
-	return this->dist_tolerance;
+	return dist_tolerance;
 }
 
 double Ping::getDistance()
 {
-	return this->distance;
+	return distance;
 }
 //Operation Functions
-bool Ping::Paused()
-{
-
-	if (((micros() - this->startTime) / 1000000 <= (this->runTime)*60) && (this->pausedState == true))// Converted to seconds
-	{
-		std::cout << (micros() - this->startTime) / 1000000 << std::endl;
-		return true;
-	}
-	else
-	{
-		this->pausedState = false;
-		return false;
-	}
-}
 
 void Ping::initStartTime()
 {
-	this->startTime = micros();
-	this->pausedState = true;
+	startTime = micros();
+	pausedState = true;
 }
 
 void Ping::updateDistance()
 {
-	int pin = this->controlPin;
+	int pin = controlPin;
 	pinMode(pin, OUTPUT);
 	digitalWrite(pin, 0); //reset to zero
 	delay(2);
@@ -88,6 +73,19 @@ bool Ping::ObjectDetected()
 {
 	//IF distance > threshold return false else true
 	//convert cm to meters
-	this->updateDistance();
-	return ((this->distance)/100 > this->dist_tolerance) ? false : true;
+	if (((micros() - startTime) / 1000000 <= (runTime) * 60) && (pausedState == true))// Converted to seconds
+	{
+		return true;
+	}
+	else
+	{
+		updateDistance();
+		pausedState = ((distance) / 100 > dist_tolerance) ? false : true;
+		if (pausedState == true)
+		{
+			this->initStartTime();
+		}
+		return this->pausedState;
+	}
+	
 }

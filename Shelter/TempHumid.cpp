@@ -1,7 +1,7 @@
 #include "TempHumid.h"
 #include <cmath>
 #include <wiringPi.h>
-#include <stdint.h>
+#include <//stdint.h>
 
 #include <iostream>
 
@@ -14,7 +14,7 @@ TempHumid::TempHumid(int pin)
 	{
 		delay(2500); //If it errors out repeat the process again after a pause
 	}
-	//std::cout << "Created instance..." << std::endl;
+	////std::cout << "Created instance..." << //std::endl;
 }
 
 
@@ -59,7 +59,7 @@ int TempHumid::Read()
 	pinMode(pin, INPUT);
 	if (digitalRead(pin) == 1) //If the dataPin is high then the pin is free to use
 	{
-		//std::cout << "Ready to read data..." << std::endl;
+		//std::cout << "Ready to read data..." << //std::endl;
 		pinMode(pin, OUTPUT);//Set the pin to output to command the sensor
 		digitalWrite(pin, 0); //Pull low for 5ms
 		delay(10); //pause for 10 milliseconds
@@ -80,11 +80,11 @@ int TempHumid::Read()
 				while (digitalRead(pin) == 1)
 				{
 					delayMicroseconds(2);
-					////std::cout << "While 5 Clear " << i << " " << j << std::endl;
+					//////std::cout << "While 5 Clear " << i << " " << j << //std::endl;
 					_t+=2;
 					if (_t > 100) //An Error has occured just return the previous value
 					{
-						//std::cout << "Error" << std::endl;
+						//std::cout << "Error" << //std::endl;
 						initStartTime();//Initialize pause time start
 						return -1;
 					}
@@ -106,18 +106,18 @@ int TempHumid::Read()
 		//Checksum
 		if (((sensor_data[0] + sensor_data[1] + sensor_data[2] + sensor_data[3]) & 0xff) != sensor_data[4])
 		{
-			//std::cout << "Invalid checksum" << std::endl;
+			////std::cout << "Invalid checksum" << //std::endl;
 			return 0; //If checksum is invalid then just return the built in temp and humidity
 		}
 		int humidity = (sensor_data[0] << 8) + sensor_data[1];
 		int temperature = (sensor_data[2] << 8) + sensor_data[3];
 		RelHumidity = ((double)humidity) / 10;
 		Temperature = ((double)temperature) / 10;
-		//std::cout << "Got temperature" << std::endl;
+		////std::cout << "Got temperature" << //std::endl;
 	}
 	else //if the dataPin is occuppied just return the built-in temp and humidity
 	{
-		//std::cout << "Pin Busy" << std::endl;
+		//std::cout << "Pin Busy" << //std::endl;
 		return 0;
 	}
 	return 0;
@@ -129,7 +129,7 @@ void TempHumid::PassTempAndHumid(double &temp, double &rHum)
 	rHum = RelHumidity;
 	if (IsPaused())
 	{
-		//std::cout << "Paused" << std::endl;
+		//std::cout << "Paused" << //std::endl;
 		return;
 	}
 	else

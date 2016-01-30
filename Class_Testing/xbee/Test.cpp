@@ -12,20 +12,22 @@ int main()
 	XBee busInfo;
 	if (busInfo.init() == false)
 	{
-		cout << "Error. Cannot connect to XBee device" << endl;
+		//cout << "Error. Cannot connect to XBee device" << endl;
+		return 0;
 	}
 	else
 	{
 		cout << "Connection successful" << endl;
 		busInfo.sendData("Hello Arduino. Do you copy?\n");
-		/*
+		
 		while (true)
 		{
-			cout << "In the loop" << endl;
+			busInfo.sendData("Hello Arduino. Do you copy?\n");
 			busInfo.dispData();
+			cout << "In the loop" << endl;
 			usleep(1000000);
 		}
-		*/
+		
 	}
 	cout << "Exited loop" << endl;
 	return 0;

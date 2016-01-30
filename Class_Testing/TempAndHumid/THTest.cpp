@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
 	wiringPiSetup();
-	TempHumid DHT22(1);
+	TempHumid DHT22(7);
 	int i;
 
 	while (true)

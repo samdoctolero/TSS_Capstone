@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	wiringPiSetup();
-	Ping proxSensor(15,2,0.5); //Control pin = 15, and tolerance = 2 meters (since PING can only operate within 3m)
+	Ping proxSensor(1,2,0.5); //Control pin = 15, and tolerance = 2 meters (since PING can only operate within 3m)
 
 	//Accumulate data on how the time and distance relate
 
@@ -32,6 +32,7 @@ int main()
 		{
 			cout << "Paused mode" << endl;
 		}*/
+	cout << "Starting test" << endl;
 	while (true)
 	{
 		if (proxSensor.ObjectDetected())
