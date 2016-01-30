@@ -103,12 +103,16 @@ int16_t IR::readRawVoltage(unsigned int addr)
 
 double IR::readObjTemp()
 {
-	double Tdie = 0;
-	Tdie = (double)readRawDieTemperature(FD);
-	printf("Tdie: %d\n",Tdie);
-	double Vobj = 0;
-	Vobj = (double)readRawVoltage(FD);
-	printf("Vobj: %d\n", Vobj);
+	int TdieRaw = 0;
+	TdieRaw = read16(FD, TMP006_TAMB);//(double)readRawDieTemperature(FD);
+	TdieRaw >>= 2;
+	double Tdie = TdieRaw;
+	//printf("Tdie: %d\n",Tdie);
+	int VobjRaw = 0;
+	VobjRaw = read16(FD, TMP006_VOBJ);//(double)readRawVoltage(FD);
+	VobjRaw >>= 2;
+	double Vobj = VobjRaw;
+	//printf("Vobj: %d\n", Vobj);
 	Vobj *= 156.25;  // 156.25 nV per LSB
 	Vobj /= 1000; // nV -> uV
 	Vobj /= 1000; // uV -> mV

@@ -36,13 +36,17 @@ void Shelter::mainLoop()
 	
 	while (run)
 	{
-		double envTemp, null;
-		bool objDetected = proxSensor->ObjectDetected();
-		cout << "Obj:" << objDetected << endl;
-		tempHumid->PassTempAndHumid(envTemp, null);
-		cout << envTemp << endl;
-		bulbControl->heatControl(10, envTemp, objDetected);
-		sleep(3);
+		//Grab all the data:
+		double bulbT = bulbTemp->readObjTemp();						//Read temperature on heat bulbs
+		double envTemp, humidity;
+		tempHumid->PassTempAndHumid(envTemp, humidity);				//Read environment temperature and humidity(not used)
+		bool objDetected = proxSensor->ObjectDetected();			//Read if an object is detected
+
+		//Output necessary info and control bulb or screen
+		screenControl(objDetected);									//Turn on screen if object is present else turn it off
+		bulbControl->heatControl(bulbT,envTemp,objDetected);		//Turn bulb ON/OFF depending on the environment temperature, bulb temperature, and if object is present
+
+		sleep(1);													//Delay
 	}
 	
 
