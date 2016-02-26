@@ -5,7 +5,7 @@
 #include "RelayBoard.h"
 #include "TempHumid.h"
 #include "ConfigManager.h"
-
+#include "widget.h"
 
 class Shelter
 {
@@ -14,6 +14,7 @@ private:
 	Ping *  proxSensor;
 	RelayBoard * bulbControl;
 	TempHumid * tempHumid;
+	widget * gui;
 
 	bool run;
 	bool hdmiOn;
