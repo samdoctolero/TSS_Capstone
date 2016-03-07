@@ -1,15 +1,12 @@
 /*****************************************************************
 XBee_Serial_Passthrough.ino
-
 Set up a software serial port to pass data between an XBee Shield
 and the serial monitor.
-
 Hardware Hookup:
   The XBee Shield makes all of the connections you'll need
   between Arduino and XBee. If you have the shield make
   sure the SWITCH IS IN THE "DLINE" POSITION. That will connect
   the XBee's DOUT and DIN pins to Arduino pins 2 and 3.
-
 *****************************************************************/
 // We'll use SoftwareSerial to communicate with the XBee:
 #include <SoftwareSerial.h>
@@ -116,10 +113,12 @@ int processData(String &msg)
     //Purpose: Recieve data from a shelter (Xbee) and parse the info
     decodeMessage("XBee");
     
-    if(rawData.length() != 10)
-    {
-      return 1;
-    }
+    Serial.println("Incoming message from shelter: " + rawData);
+    
+    //if(rawData.length() != 10)
+    //{
+     // return 1;
+    //}
 
     String bRoute = "";
     int found = 0;
@@ -132,6 +131,11 @@ int processData(String &msg)
         found = 1;
         break;
       }
+      else if (bRoute == rawData.substring(4, 6))
+      {
+        found = 2;
+        break;
+      }
     }
 
     if (found == 0)
@@ -139,30 +143,57 @@ int processData(String &msg)
         msg = "Not valid bus number.";
         return -1;
     }
-    
-    if(rawData.substring(0,2) == "s0" && rawData.substring(2,4) == bRoute && rawData.substring(6) == prevShelterID)
+    else if (found == 1)
     {
-      numStop = (int)strtol(&rawData.substring(4,6)[0],NULL,16); //Convert String HEX to int
-      numStop++;
-
-      msg = "Incoming message from shelter: ";
-      //Create message to send to other shelters in a new function
-      return 0;
+      if(rawData.substring(0,2) == "s0" && rawData.substring(2,4) == bRoute && rawData.substring(6,10) == prevShelterID)
+      {
+        numStop = (int)strtol(&rawData.substring(4,6)[0],NULL,16); //Convert String HEX to int
+        numStop++;
+      
+        //Create message to send to other shelters in a new function
+        return 0;
+      }
+      else if(rawData.substring(0,2) != "s0")
+      {
+        msg = "Parsed data did not originate from shelter.";
+        return -1;
+      }
+      else if(rawData.substring(6,10) != prevShelterID)
+      {
+        msg = "Data did not originate from a valid shelter source.";
+        return -1;
+      }
+      else
+      {
+        msg = "ITS AN ERROR! PANIC!";
+        return -1;
+      } 
     }
-    else if(rawData.substring(0,2) != "s0")
+    else if (found == 2)
     {
-      msg = "Parsed data did not originate from shelter.";
-      return -1;
-    }
-    else if(rawData.substring(6) != prevShelterID)
-    {
-      msg = "Data did not originate from a valid shelter source.";
-      return -1;
-    }
-    else
-    {
-      msg = "ITS AN ERROR! PANIC!";
-      return -1;
+      if(rawData.substring(2,4) == "s0" && rawData.substring(4,6) == bRoute && rawData.substring(8,12) == prevShelterID)
+      {
+        numStop = (int)strtol(&rawData.substring(6,8)[0],NULL,16); //Convert String HEX to int
+        numStop++;
+      
+        //Create message to send to other shelters in a new function
+        return 0;
+      }
+      else if(rawData.substring(2,4) != "s0")
+      {
+        msg = "Parsed data did not originate from shelter.";
+        return -1;
+      }
+      else if(rawData.substring(8,12) != prevShelterID)
+      {
+        msg = "Data did not originate from a valid shelter source.";
+        return -1;
+      }
+      else
+      {
+        msg = "ITS AN ERROR! PANIC!";
+        return -1;
+      } 
     }
 }
 
@@ -175,28 +206,29 @@ void doCheck (int check, String msg, String data)
   else if(check == 0)
   {
     //Send to xbee
-    Serial.println(msg + data);
     send(data);
-    
   }
   else if(check == 1)
   {
     Serial.println("Waiting for end character.");  
   }
+  Serial.println();
 }
 
 void send(String data)
 {
   String sendData = "s0";
   String _numStop = String(numStop, HEX);
+  
   if (numStop < 16)
   {
     _numStop = "0" + _numStop;
   }
-  sendData += data.substring(2,4) + _numStop + shelterID;
+ 
+  sendData += data.substring(4,6) + _numStop + shelterID;
   Serial.println("Sending message to shelter: " + sendData);
 
-  XBee.print(sendData + "n");
+  XBee.println(sendData + "n");
 }
 
 void reset()
@@ -241,7 +273,7 @@ void decodeMessage(String type)
   }
   else if (type == "XBee")
   {
-    while(rawData.length() < 11)
+    while(rawData.length() < 15)
     {
       if (XBee.available())
       {
@@ -250,10 +282,8 @@ void decodeMessage(String type)
         {
           break;
         }
-      
         rawData += t;
       }
     }
   }
 }
-
