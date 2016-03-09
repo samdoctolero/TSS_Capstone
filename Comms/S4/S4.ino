@@ -17,17 +17,17 @@ Hardware Hookup:
 // XBee's DIN (RX) is connected to pin 3 (Arduino's Software TX)
 SoftwareSerial XBee(3, 2); // RX, TX
 
-//Shelter: S3
-//Shelter ID: 0x0003
-//Shelter Next ID: 0x0004
+//Shelter: S4
+//Shelter ID: 0x0004
+//Shelter Next ID: 0x0005
 //Shelter Bus Route: 0x0A (10)
-//Shelter Previous ID: 0x0002
+//Shelter Previous ID: 0x0003
 
 //Global variables:
 //Bus to Shelter: b0
-int busRoute = 10;
-String prevShelterID []= {"0002"};
-String shelterID = "0003"; 
+int busRoute[] = {10, 107};
+String prevShelterID = "0003";
+String shelterID = "0004"; 
 String rawData = "";
 int numStop = 0;
 
@@ -72,19 +72,32 @@ void loop()
 int busIn(String &msg)
 {
     //Purpose: Emulated a bus passing through a shelter
-    //String rawData = Serial.readString();
     decodeMessage("Serial");
+
+    Serial.println("Incoming message from bus: " + rawData);
     
     if(rawData.length() != 4)
     {
       return 1;
     }
+
+    String bRoute = "";
+    int found = 0;
     
-    String bRoute = getBusRoute();
-    if (bRoute != rawData.substring(2, 4))
+    for (int i = 0; i < 2; i++)
     {
-      msg = "Not valid bus number.";
-      return -1;
+      bRoute = getBusRoute(i);
+      if (bRoute == rawData.substring(2, 4))
+      {
+        found = 1;
+        break;
+      }
+    }
+
+    if (found == 0)
+    {
+        msg = "Not valid bus number.";
+        return -1;
     }
     else if (rawData.substring(0, 2) != "b0")
     {
@@ -94,7 +107,6 @@ int busIn(String &msg)
     else
     {
       msg += "b0" + bRoute;
-      msg = "Incoming Message from bus: ";
       
       return 0;
     }
@@ -104,32 +116,38 @@ int processData(String &msg)
 {
     //Purpose: Recieve data from a shelter (Xbee) and parse the info
     decodeMessage("XBee");
+
+    Serial.println( "Incoming message from shelter: " + rawData);
     
-    if(rawData.length() != 10)
+    if(rawData.length() == 12)
     {
       return 1;
     }
 
-    String bRoute = getBusRoute();
-
-    if(rawData.substring(0,2) == "s0" && rawData.substring(2,4) == bRoute)
+    String bRoute = "";
+    int found = 0;
+    
+    for (int i = 0; i < 2; i++)
     {
-      if (rawData.substring(6) == prevShelterID[0])
+      bRoute = getBusRoute(i);
+      if (bRoute == rawData.substring(2, 4))
       {
-        numStop = (int)strtol(&rawData.substring(4,6)[0],NULL,16); //Convert String HEX to int
-        numStop++;
+        found = 1;
+        break;
       }
-      else
-      {
-        for(int i = 0;i < 4; i++)
-        {
-          if (rawData.substring(6) == prevShelterID[i])
-          {
-            numStop = i + 1;
-          }
-        }
-      }
-      //Create message to send to other shelters in a new function
+    }
+
+    if (found == 0)
+    {
+        msg = "Not valid bus number.";
+        return -1;
+    }
+    
+    if(rawData.substring(0,2) == "s0" && rawData.substring(2,4) == bRoute && rawData.substring(6) == prevShelterID)
+    {
+      numStop = (int)strtol(&rawData.substring(4,6)[0],NULL,16); //Convert String HEX to int
+      numStop++;
+
       return 0;
     }
     else if(rawData.substring(0,2) != "s0")
@@ -137,19 +155,14 @@ int processData(String &msg)
       msg = "Parsed data did not originate from shelter.";
       return -1;
     }
-    else if(rawData.substring(2,4) != bRoute)
+    else if(rawData.substring(6) != prevShelterID)
     {
-      msg = "Not a valid bus route";
-      return -1;
-    }
-    else if(rawData.substring(6) != prevShelterID[0])
-    {
-      msg = "Data did not originate from a valid shelter source";
+      msg = "Data did not originate from a valid shelter source.";
       return -1;
     }
     else
     {
-      msg = "ITS AN ERROR! PANIC";
+      msg = "ITS AN ERROR! PANIC!";
       return -1;
     }
 }
@@ -163,14 +176,13 @@ void doCheck (int check, String msg, String data)
   else if(check == 0)
   {
     //Send to xbee
-    Serial.println(msg + data);
     send(data);
-    
   }
   else if(check == 1)
   {
     Serial.println("Waiting for end character.");  
   }
+  Serial.println();
 }
 
 void send(String data)
@@ -182,8 +194,9 @@ void send(String data)
     _numStop = "0" + _numStop;
   }
   sendData += data.substring(2,4) + _numStop + shelterID;
-  Serial.println("Sending message to shelter:" + sendData);
-  XBee.print(sendData + "n");
+  Serial.println("Sending message to shelter: " + sendData);
+
+  XBee.println(sendData + "n");
 }
 
 void reset()
@@ -192,16 +205,16 @@ void reset()
   numStop = 0;
 }
 
-String getBusRoute()
+String getBusRoute(int i)
 {
   String bRoute = "";
-  if(busRoute < 15)
+  if(busRoute[i] < 15)
   {
-    bRoute = "0" + String(busRoute, HEX) ;
+    bRoute = "0" + String(busRoute[i], HEX) ;
   }
   else
   {
-    bRoute = String(busRoute, HEX);
+    bRoute = String(busRoute[i], HEX);
   }
   return bRoute;
 }
@@ -228,7 +241,7 @@ void decodeMessage(String type)
   }
   else if (type == "XBee")
   {
-    while(rawData.length() < 11)
+    while(rawData.length() < 15)
     {
       if (XBee.available())
       {
