@@ -3,13 +3,14 @@
 class BusInfo
 {
 public:
-	BusInfo(int num);
+	BusInfo(int num, string ID);
 	~BusInfo();
 
 	void updateData();
 	int getNumStopAway();
 	int getTimestamp();
 	string getShelterID();
+	int getBusNum();
 	
 private:
 	int busNum;

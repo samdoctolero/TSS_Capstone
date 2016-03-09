@@ -64,3 +64,8 @@ string BusInfo::getShelterID()
 	return shelterID;
 }
 
+int BusInfo::getBusNum()
+{
+	return busNum;
+}
+
