@@ -83,6 +83,10 @@ void Shelter::initialize()
 	bulbControl = new RelayBoard(config.relay_control, config.relay_idle_temperature, config.relay_minimum_temperature);
 	tempHumid = new TempHumid(config.temp_humid_pin);
 	//Set up gui
+	QApplication a(argc, argv);
+	QPalette pal = a.palette();
+	pal.setColor(QPalette::Window, Qt::black);
+	a.setPalette(pal);
 	gui = new widget();
 	gui.setCursor(Qt::BlankCursor);
 	gui.displayBusRouteInfor();
@@ -94,6 +98,7 @@ void Shelter::initialize()
 	gui.setBusRouteInfo("7", "8", "9");
 	gui.setBusRouteInfo("10", "11", "12");
 	gui.showFullScreen();
+	a.exec();
 
 	stopPin = config.stop_pin;
 	//wiringPi creates the connections in the backend

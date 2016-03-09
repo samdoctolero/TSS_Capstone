@@ -3,6 +3,8 @@
 #include <QStandardItem>
 #include <QPalette>
 #include <QLCDNumber>
+#include <QWidget>
+#include <QApplication>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),

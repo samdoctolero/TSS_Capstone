@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
+#include "ui_widget.h"
+#include <QtWidgets>
+
 namespace Ui {
 class Widget;
 }
