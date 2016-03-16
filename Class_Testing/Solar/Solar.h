@@ -1,5 +1,7 @@
 #pragma once
-#include <string>;
+#include <string>
+
+using namespace std;
 
 class Solar
 {
@@ -23,7 +25,7 @@ private:
 	string * currPath;
 
 	void resetAmpHour();
-	static unsigned char LRC(auchMsg, usDataLen);
+	unsigned char LRC(unsigned char *auscMsg, int usDataLen);
 	double readAmpHour();
 	double readBattPercent();
 
