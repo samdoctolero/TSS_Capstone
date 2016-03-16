@@ -20,6 +20,7 @@
 #define P_LOG_FILE		"/powerLog"
 #define NO_DATA			0x
 
+
 using namespace std;
 
 Solar::Solar(int baud)
@@ -31,11 +32,12 @@ Solar::Solar(int baud)
 		cout << "Not initialized" << endl;
 	}
 
+	
 	struct termios options;
 	tcgetattr(serialObj, &options);
 	options.c_cflag |= CSTOPB;
 	tcsetattr(serialObj,0, &options);
-
+	
 
 	char currentPath[FILENAME_MAX];
 	getcwd(currentPath, FILENAME_MAX);
@@ -113,21 +115,40 @@ double Solar::readAmpHour()
 
 double Solar::readBattPercent()
 {
-	
-	unsigned char msg[10] = { START_CHAR, 0x01, 0x03, 0x00, 0x6B, 0x00,0x03, 0x00, 0x0D, 0x0A };
+	char colon = ':';
+	char CR = 0x0D;
+	char LF = 0x0A;
+	unsigned char cmd[4] = {'0','1','1','1'};
+	//unsigned char msg[9] = { 0x3A, 0x00,0x01, 0x00,0x07, 0x00, 0x00, 0x0D, 0x0A };
 	//string(START_CHAR) + string(BATT_ADD) + string(READ_FUNC) + string("0003");
 	//unsigned char msg[18] = { '3', 'A', '0', '0', '0', '9', '0', '3', '0', '0', '0', '3', '5', '8', '0', 'D', '0', 'A' };
-	unsigned char check = LRC(msg,10);
-	cout << "Check int " << (int)check << endl;
-	msg[7] = check;
-	for (int i = 0; i < 10; i++)
+	unsigned char check = LRC(cmd,4);
+
+	cout << "Check int " << hex << (int)check << endl;
+
+	unsigned int b = (unsigned int)check & 0xf;
+	unsigned int a = ((unsigned int)check >> 4) & 0xf;
+
+	char LRCHi = (unsigned char)a;
+	char LRCLo = (unsigned char)b;
+
+	stringstream LRCHi_16;
+	LRCHi_16 << hex << LRCHi;
+	char t;
+	t << LRCHi_16;
+	cout << t << endl;
+
+	unsigned char msg[9] = {colon,cmd[0],cmd[1],cmd[2],cmd[3],'3','d',CR,LF};
+
+	for (int i = 0; i < 9; i++)
 	{
 		serialPutchar(serialObj,msg[i]);
-		cout <<i<<":" <<msg[i] << endl;
+		cout <<msg[i];
 	}
 	// cout << msg << endl;
 	//serialPrintf(serialObj, msg);
 	//cout << "Query sent..." <<msg<< endl;
+	//cout << serialGetchar(serialObj) << endl;;
 	while (serialDataAvail(serialObj) <= 0)
 	{
 		cout << serialDataAvail(serialObj) << endl;

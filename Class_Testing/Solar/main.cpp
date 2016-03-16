@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-	Solar s(3600);
+	Solar s(9600);
 	s.updateData();
 	return 0;
 }
