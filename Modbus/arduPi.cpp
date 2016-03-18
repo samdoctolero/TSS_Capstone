@@ -60,7 +60,7 @@ timeval start_program, end_point;
 //Constructor
 SerialPi::SerialPi(){
 	REV = getBoardRev();
-    serialPort="/dev/ttyAMA0";
+    serialPort="/dev/ttyUSB0";
     timeOut = 1000;
 }
 
