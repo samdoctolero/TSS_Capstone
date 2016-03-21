@@ -1,24 +1,15 @@
-#include <wiringSerial.h>
+#include <modbus.h>
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
 #include <string>
 #include <iostream>
-#include <termios.h>
 #include "Solar.h"
 
 //Command constants
-#define READ_FUNC		0x03
-#define AMPH_ADD_HI		0x0013
-#define AMPH_ADD_LO		0x0014
-#define BATT_ADD		0x0009
-#define AH_RESET_ADD	0x0010
-#define START_CHAR		0x3A
-#define END_CHAR		0x0DA0
-#define SLAVE_ADD		0x0000			//default address
-#define SERIAL_NAME		"/dev/ttyUSB0"
+#define SLAVE_ADD		0x0001			//default address
+#define SERIAL_NAME		"/dev/ttyUSB1"
 #define P_LOG_FILE		"/powerLog"
-#define NO_DATA			0x
 
 
 using namespace std;
@@ -26,17 +17,11 @@ using namespace std;
 Solar::Solar(int baud)
 :baudRate(baud), ampHour(0), accumAmpHour(0)
 {
-	serialObj = serialOpen(SERIAL_NAME, baudRate);
-	if (serialObj == -1)
+	modBusObj = modbus_new_rtu(SERIAL_NAME,baud,'N',8,2);
+	if (modBusObj == 0)
 	{
 		cout << "Not initialized" << endl;
 	}
-
-	
-	struct termios options;
-	tcgetattr(serialObj, &options);
-	options.c_cflag |= CSTOPB;
-	tcsetattr(serialObj,0, &options);
 	
 
 	char currentPath[FILENAME_MAX];
@@ -46,7 +31,6 @@ Solar::Solar(int baud)
 
 Solar::~Solar()
 {
-	serialClose(serialObj);
 	delete currPath;
 }
 
@@ -72,15 +56,6 @@ double Solar::getDayAmpHour()
 
 void Solar::updateData()
 {
-	//Format:
-	//|Start 1xchar|Address 2xchar|Function 2xchar|Data Nxchar|LRC 2xchar|End 2xchar|
-	//Update ampHour
-
-	//Update accumAmpHour
-
-	//Update dayAmpHour
-
-	//Update battPercent
 	battPercent = readBattPercent();
 }
 
@@ -115,53 +90,5 @@ double Solar::readAmpHour()
 
 double Solar::readBattPercent()
 {
-	char colon = ':';
-	char CR = 0x0D;
-	char LF = 0x0A;
-	unsigned char cmd[4] = {'0','1','1','1'};
-	//unsigned char msg[9] = { 0x3A, 0x00,0x01, 0x00,0x07, 0x00, 0x00, 0x0D, 0x0A };
-	//string(START_CHAR) + string(BATT_ADD) + string(READ_FUNC) + string("0003");
-	//unsigned char msg[18] = { '3', 'A', '0', '0', '0', '9', '0', '3', '0', '0', '0', '3', '5', '8', '0', 'D', '0', 'A' };
-	unsigned char check = LRC(cmd,4);
 
-	cout << "Check int " << hex << (int)check << endl;
-
-	unsigned int b = (unsigned int)check & 0xf;
-	unsigned int a = ((unsigned int)check >> 4) & 0xf;
-
-	char LRCHi = (unsigned char)a;
-	char LRCLo = (unsigned char)b;
-
-	stringstream LRCHi_16;
-	LRCHi_16 << hex << LRCHi;
-	char t;
-	t << LRCHi_16;
-	cout << t << endl;
-
-	unsigned char msg[9] = {colon,cmd[0],cmd[1],cmd[2],cmd[3],'3','d',CR,LF};
-
-	for (int i = 0; i < 9; i++)
-	{
-		serialPutchar(serialObj,msg[i]);
-		cout <<msg[i];
-	}
-	// cout << msg << endl;
-	//serialPrintf(serialObj, msg);
-	//cout << "Query sent..." <<msg<< endl;
-	//cout << serialGetchar(serialObj) << endl;;
-	while (serialDataAvail(serialObj) <= 0)
-	{
-		cout << serialDataAvail(serialObj) << endl;
-		sleep(1);
-	} //Pretty much pause until the data is available
-	int response = 0;
-	while (serialDataAvail(serialObj) > 0)
-	{
-		response = serialGetchar(serialObj);
-	}
-
-	//First 7 characters are not needed
-	cout << response << endl;
-	
-	return 1.0;
 }

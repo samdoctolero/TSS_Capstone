@@ -17,7 +17,7 @@ public:
 
 private:
 	int baudRate;
-	int serialObj; 
+	modbus_t * modBusObj; 
 	double ampHour;
 	double accumAmpHour;
 	double dayAmpHour;
