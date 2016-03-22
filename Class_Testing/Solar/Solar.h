@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <modbus.h>
 
 using namespace std;
 
@@ -8,25 +9,21 @@ class Solar
 public:
 	Solar(int baud);
 	~Solar();
-	double getAccumAmpHour();
-	double getBatteryPercent();
-	double getDayAmpHour();
-	double getAmpHour();
 	void updateData();
 	void logData(); //call this function every hour to log the data for that day
-
+	
+	double getBattVoltage();
+	double getChargeCurrent();
+	double getLoadCurrent();
+	double getPowerUsed();
+	double getPowerCharged();
 private:
 	int baudRate;
-	int serialObj; 
-	double ampHour;
-	double accumAmpHour;
-	double dayAmpHour;
-	double battPercent;
+	modbus_t * modBusObj; 
+	double battVoltage;
+	double chargeCurrent;
+	double loadCurrent;
+	double powerUsed;
+	double powerCharged;
 	string * currPath;
-
-	void resetAmpHour();
-	unsigned char LRC(unsigned char *auscMsg, int usDataLen);
-	double readAmpHour();
-	double readBattPercent();
-
 };
