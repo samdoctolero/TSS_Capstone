@@ -10,6 +10,7 @@
 #define SLAVE_ADD		0x0001			//default address
 #define SERIAL_NAME		"/dev/ttyUSB1"
 #define P_LOG_FILE		"/powerLog"
+//#define NULL			0
 
 
 using namespace std;
@@ -18,7 +19,7 @@ Solar::Solar(int baud)
 :baudRate(baud), battVoltage(0), chargeCurrent(0), loadCurrent(0), powerUsed(0), powerCharged(0)
 {
 	modBusObj = modbus_new_rtu(SERIAL_NAME,baud,'N',8,2);
-	if (modBusObj == 0)
+	if (modBusObj == NULL)
 	{
 		cout << "Not initialized" << endl;
 	}
@@ -53,7 +54,8 @@ void Solar::updateData()
 	int check = modbus_read_registers(modBusObj, 1,29, response); //8 is arbitrary. It will give all the numbers
 	if (check < 0)//means a zero
 	{
-		cout << "Unable to update data" << endl;
+		cout << "Unable to update data. Error with: " <<check<< endl;
+		fprintf(stderr, "%s\n", modbus_strerror(check));
 	}
 	else
 	{
@@ -64,9 +66,9 @@ void Solar::updateData()
 		powerUsed = battVoltage * loadCurrent;
 		powerCharged = battVoltage * chargeCurrent;
 
-		//cout << "Battery Voltage: " << battVoltage <<" Raw: "<<response[7]<< endl;
-		//cout << "Charge Current: " << chargeCurrent <<"Raw: "<<response[11]<< endl;
-		//cout << "Load Current: " << loadCurrent << "Raw: "<<response[12]<<endl;
+		cout << "Battery Voltage: " << battVoltage <<" Raw: "<<response[7]<< endl;
+		cout << "Charge Current: " << chargeCurrent <<" Raw: "<<response[10]<< endl;
+		cout << "Load Current: " << loadCurrent << " Raw: "<<response[11]<<endl;
 		
 		/*
 		for (int i = 0; i < 30; i++)
