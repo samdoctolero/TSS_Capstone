@@ -1,0 +1,6 @@
+- Clean up code, better object oriented
+- More testing and modifications for reliability
+- Logging feature for the solar information
+- Configuration update propagation algorithm (really convenient for maintenance)
+- Better looking GUI
+- Integrate learning algorithms for the shelters to create predictions when data is not available
